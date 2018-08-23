@@ -16,7 +16,7 @@ import './chart.css';
 
 const propTypes = {
   annotationData: PropTypes.object,
-  actions: PropTypes.object,
+  actions: PropTypes.object.isRequired,
   chartId: PropTypes.number.isRequired,
   containerId: PropTypes.string.isRequired,
   datasource: PropTypes.object.isRequired,
@@ -49,6 +49,10 @@ const propTypes = {
 const defaultProps = {
   addFilter: () => ({}),
   getFilters: () => ({}),
+  annotationData: undefined,
+  headerHeight: 0,
+  height: 0,
+  width: 0
 };
 
 class Chart extends React.PureComponent {

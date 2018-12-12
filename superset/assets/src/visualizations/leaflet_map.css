@@ -1,3 +1,7 @@
 .color_column_div{
 
 }
+
+.active-layer{
+    stroke-width:5 !important;
+}

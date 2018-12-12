@@ -212,7 +212,23 @@ function leafletmap(slice, payload) {
     }
 
     function mapItemClick(event) {
-        slice.addFilter(formData.geojson, [event.target.feature.properties.id], false);
+        var vals = [];
+        // remove previous selected layers except selected
+        Object.values(event.target._map._targets).forEach(element => {
+            if(element._path.classList.contains('active-layer') && event.target._leaflet_id != element._leaflet_id ){
+                element._path.classList.remove('active-layer');
+            }
+        });
+      
+        if(event.target._path.classList.contains('active-layer')){
+            event.target._path.classList.remove('active-layer');
+        }else{
+            event.target._path.classList.add('active-layer');
+            vals = [event.target.feature.properties.id];
+        }
+
+        slice.addFilter(formData.geojson, vals, false);
+       
     }
 
     function getSelectedColorColumn() {

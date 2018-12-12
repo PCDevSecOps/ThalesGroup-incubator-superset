@@ -215,7 +215,7 @@ function leafletmap(slice, payload) {
         var vals = [];
         // remove previous selected layers except selected
         Object.values(event.target._map._targets).forEach(element => {
-            if(element._path.classList.contains('active-layer') && event.target._leaflet_id != element._leaflet_id ){
+            if(element.hasOwnProperty('_path') && element._path.classList.contains('active-layer') && event.target._leaflet_id != element._leaflet_id ){
                 element._path.classList.remove('active-layer');
             }
         });

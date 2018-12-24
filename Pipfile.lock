@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3fdf7b35201034295639e1d7c8e43d6e230c5f5799d2b58387361542d689bfac"
+            "sha256": "0918030b4506f7d3cf9d2e9e494e70be1933d88fdb9c4c26ad57a707fb0d76a7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -743,10 +743,9 @@
         },
         "pyldap": {
             "hashes": [
-                "sha256:9ea6ae79b48f3178561a6bc105bcbc77231d5994e67ffb81b7699b8f19dd92c3"
+                "sha256:9c10dc9663d3b3f5899f811fcb89618cc96d41b9f8a68b3eed5f13de5b44ce24"
             ],
-            "index": "pypi",
-            "version": "==3.0.0.post1"
+            "version": "==3.0.0"
         },
         "python-dateutil": {
             "hashes": [

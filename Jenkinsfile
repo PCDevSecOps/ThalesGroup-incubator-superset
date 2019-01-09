@@ -9,6 +9,7 @@ pipeline {
     WORKSPACE = pwd()
     supersetInventoryFilePath = 'superset-installer/etc/reflex-provisioner/inventory/templates/group_vars/global/all/raf/superset.yml'
     jenkinsInventoryFilePath = '${WORKSPACE}/${supersetInventoryFilePath}'
+    testWithDatabase = 'py36-sqlite'
   }
   stages {
 
@@ -34,6 +35,7 @@ pipeline {
         stage("Unit test") {
           steps {
             echo "Run Commmands to execute unit test"
+            //sh  "./scripts/test_rpm.sh ${env.testWithDatabase}"      
           }
         }
         stage("Code coverage") {
@@ -73,6 +75,13 @@ pipeline {
         script{
           rpm_push( env.buildType, 'dist/installer', 'ggn-dev-rpms/superset' )
         }
+      }
+    }
+
+    stage("Unit test") {
+      steps {
+        echo "Run Commmands to execute unit test"
+        sh  "./scripts/test_rpm.sh ${env.testWithDatabase}"      
       }
     }
 

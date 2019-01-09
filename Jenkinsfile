@@ -35,7 +35,7 @@ pipeline {
         stage("Unit test") {
           steps {
             echo "Run Commmands to execute unit test"
-            //sh  "./scripts/test_rpm.sh ${env.testWithDatabase}"      
+            sh "cd ${WORKSPACE} && ./scripts/test_rpm.sh ${env.testWithDatabase}"
           }
         }
         stage("Code coverage") {
@@ -50,18 +50,6 @@ pipeline {
         }
       }
     }
-    stage("Build or Compile") {
-      steps {
-        echo "Run Commmands to trigger build"
-      }
-    }
-    stage('Code Quality with SonarQube') {
-      steps {
-        script {
-            echo "Code Quality with SonarQube"
-        }
-      }
-    }
     stage('Create RPMs') {
       steps {
         echo "Run Commmand to trigger rpm build"
@@ -69,19 +57,11 @@ pipeline {
       }
     }
 
-
     stage("Push rpm images in artifactory"){
       steps{
         script{
           rpm_push( env.buildType, 'dist/installer', 'ggn-dev-rpms/superset' )
         }
-      }
-    }
-
-    stage("Unit test") {
-      steps {
-        echo "Run Commmands to execute unit test"
-        sh  "./scripts/test_rpm.sh ${env.testWithDatabase}"      
       }
     }
 

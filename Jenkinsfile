@@ -15,6 +15,7 @@ pipeline {
 
     stage("Define Release version"){
       steps {
+        echo "Defining release version"
         script {
           versionDefine()
         }

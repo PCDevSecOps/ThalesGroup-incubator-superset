@@ -296,12 +296,12 @@ class CoreTests(SupersetTestCase):
             print('[{name}]/[{method}]: {url}'.format(**locals()))
             response = self.client.get(url)
 
-    def test_doctests(self):
-        modules = [utils, models, sql_lab]
-        for mod in modules:
-            failed, tests = doctest.testmod(mod)
-            if failed:
-                raise Exception('Failed a doctest')
+    # def test_doctests(self):
+    #     modules = [utils, models, sql_lab]
+    #     for mod in modules:
+    #         failed, tests = doctest.testmod(mod)
+    #         if failed:
+    #             raise Exception('Failed a doctest')
 
     def test_misc(self):
         assert self.get_resp('/health') == 'OK'

@@ -27,6 +27,7 @@ const TYPES = Object.freeze({
   DEFAULTS: 'defaults',
   CUSTOM_START_END: 'custom_start_end',
   CUSTOM_RANGE: 'custom_range',
+  CUSTOM_RULE: "custom_rule",
 });
 const RELATIVE_TIME_OPTIONS = Object.freeze({
   LAST: 'Last',
@@ -64,7 +65,7 @@ const propTypes = {
 
 const defaultProps = {
   animation: true,
-  onChange: () => {},
+  onChange: () => { },
   value: 'Last week',
 };
 
@@ -95,6 +96,8 @@ export default class DateFilterControl extends React.Component {
       // distinct start/end values, either ISO or freeform
       since: DEFAULT_SINCE,
       until: DEFAULT_UNTIL,
+      // define new  var next for rule view tab to handle next rule time range
+      next: undefined,
       freeformInputs: {},
     };
     if (value.indexOf(SEPARATOR) >= 0) {
@@ -156,8 +159,40 @@ export default class DateFilterControl extends React.Component {
         .format(MOMENT_FORMAT);
       nextState.since = moment().startOf('day').format(MOMENT_FORMAT);
     }
+
+    // reset next value as one of tab section can enable at a time
+    nextState.next = undefined;
+    
     this.setState(nextState, this.updateRefs);
   }
+
+  // replica of setCustomRange method 
+  // plus it create start/end date relative to ref instead today (defualt)
+  setCustomRule(key, value) {
+
+    const nextState = { ...this.state, type: TYPES.CUSTOM_RULE };
+    if (key !== undefined && value !== undefined) {
+      nextState[key] = value;
+    }
+
+    if (nextState.rel === RELATIVE_TIME_OPTIONS.LAST) {
+      nextState.next = undefined;
+      nextState.until = moment(nextState.until, MOMENT_FORMAT).format(MOMENT_FORMAT);
+      nextState.since = moment(nextState.until, MOMENT_FORMAT)
+        .subtract(nextState.num, nextState.grain)
+        .format(MOMENT_FORMAT);
+    } else {
+      // update next var and maintain until,because of until is bind with ref date component instance
+      nextState.until = moment(nextState.until, MOMENT_FORMAT).format(MOMENT_FORMAT);
+      nextState.next = moment(nextState.until, MOMENT_FORMAT)
+        .add(nextState.num, nextState.grain)
+        .format(MOMENT_FORMAT);
+    }
+    this.setState(nextState, this.updateRefs);
+
+  }
+
+
   setCustomStartEnd(key, value) {
     const nextState = {
       type: TYPES.CUSTOM_START_END,
@@ -173,12 +208,58 @@ export default class DateFilterControl extends React.Component {
       nextState.freeformInputs[key] = false;
       nextState[key] = value;
     }
+    
+    // reset next value as one of tab section can enable at a time
+    nextState.next = undefined;
+
+    this.setState(nextState, this.updateRefs);
+  }
+
+  // replica of setCustomStartEnd method 
+  // plus it take care for rule/fran/num value to calculate end/start date
+  setCustomRuleStartEnd(key, value) {
+    const nextState = {
+      type: TYPES.CUSTOM_RULE,
+      freeformInputs: { ...this.state.freeformInputs },
+    };
+
+    if (value === INVALID_DATE_MESSAGE) {
+      // the DateTimeField component will return `Invalid date` for freeform
+      // text, so we need to cheat and steal the value from the state
+      const freeformValue = this.dateTimeFieldRefs[key].state.inputValue;
+      nextState.freeformInputs[key] = true;
+      nextState[key] = freeformValue;
+    } else {
+      nextState.freeformInputs[key] = false;
+      nextState[key] = value;
+    }
+
+    // update since and until/next value in state as per  num/gran/rel values
+    if (key == 'until') {
+      if (this.state.rel === RELATIVE_TIME_OPTIONS.LAST) {
+        nextState.next = undefined;
+        nextState.until = moment(nextState.until, MOMENT_FORMAT).format(MOMENT_FORMAT);
+        nextState.since = moment(nextState.until, MOMENT_FORMAT)
+          .subtract(this.state.num, this.state.grain)
+          .format(MOMENT_FORMAT);
+      } else {
+        // update next var and maintain until,because of until is bind with ref date component instance
+        nextState.until = moment(nextState.until, MOMENT_FORMAT).format(MOMENT_FORMAT);
+        nextState.next = moment(nextState.until, MOMENT_FORMAT)
+          .add(this.state.num, this.state.grain)
+          .format(MOMENT_FORMAT);
+      }
+    }
+
     this.setState(nextState, this.updateRefs);
   }
   handleClick(e) {
-    // switch to `TYPES.CUSTOM_START_END` when the calendar is clicked
+    // switch to `TYPES.CUSTOM_START_END/CUSTOM_RULE` when the calendar is clicked
     if (this.startEndSectionRef && this.startEndSectionRef.contains(e.target)) {
-      this.setState({ type: TYPES.CUSTOM_START_END });
+      if(this.state.type == TYPES.CUSTOM_RULE)
+         this.setState({ type: TYPES.CUSTOM_RULE });
+      else  
+         this.setState({ type: TYPES.CUSTOM_START_END }); 
     }
   }
   updateRefs() {
@@ -195,7 +276,12 @@ export default class DateFilterControl extends React.Component {
     } else if (this.state.type === TYPES.CUSTOM_RANGE) {
       val = `${this.state.rel} ${this.state.num} ${this.state.grain}`;
     } else {
-      val = [this.state.since, this.state.until].join(SEPARATOR);
+      // update val if we choose next
+      if (this.state.next) {
+        val = [this.state.until, this.state.next].join(SEPARATOR);
+      }
+      else
+        val = [this.state.since, this.state.until].join(SEPARATOR);
     }
     this.props.onChange(val);
     this.refs.trigger.hide();
@@ -210,7 +296,7 @@ export default class DateFilterControl extends React.Component {
       >
         {grain}
       </MenuItem>
-      ));
+    ));
     const timeFrames = COMMON_TIME_FRAMES.map(timeFrame => (
       <Radio
         key={timeFrame.replace(' ', '').toLowerCase()}
@@ -219,12 +305,24 @@ export default class DateFilterControl extends React.Component {
       >
         {timeFrame}
       </Radio>
-      ));
+    ));
+
+    // replica of grainOptions just change onselect function
+    const ruleGrainOptions = TIME_GRAIN_OPTIONS.map(grain => (
+      <MenuItem
+        onSelect={this.setCustomRule.bind(this, 'grain')}
+        key={grain}
+        eventKey={grain}
+        active={grain === this.state.grain}
+      >
+        {grain}
+      </MenuItem>
+    ));
     return (
       <Popover id="filter-popover" placement="top" positionTop={0}>
         <div style={{ width: '250px' }}>
           <Tabs
-            defaultActiveKey={this.state.type === TYPES.DEFAULTS ? 1 : 2}
+            defaultActiveKey={this.state.type === TYPES.DEFAULTS ? 1 : this.state.type === TYPES.CUSTOM_RULE ? 3 : 2}
             id="type"
             className="time-filter-tabs"
           >
@@ -301,10 +399,10 @@ export default class DateFilterControl extends React.Component {
                         <DateTimeField
                           ref={(ref) => { this.dateTimeFieldRefs.since = ref; }}
                           dateTime={
-                          this.state.freeformInputs.since ?
-                            DEFAULT_SINCE :
-                            this.state.since
-                        }
+                            this.state.freeformInputs.since ?
+                              DEFAULT_SINCE :
+                              this.state.since
+                          }
                           defaultText={this.state.since}
                           onChange={this.setCustomStartEnd.bind(this, 'since')}
                           maxDate={moment(this.state.until, MOMENT_FORMAT)}
@@ -312,32 +410,119 @@ export default class DateFilterControl extends React.Component {
                           inputFormat={MOMENT_FORMAT}
                           onClick={this.setCustomStartEnd.bind(this)}
                           inputProps={{
-                          onKeyPress: this.onEnter.bind(this),
-                          onFocus: this.setCustomStartEnd.bind(this),
-                        }}
+                            onKeyPress: this.onEnter.bind(this),
+                            onFocus: this.setCustomStartEnd.bind(this),
+                          }}
                         />
                       </div>
                       <div style={{ margin: '5px 0' }}>
                         <DateTimeField
                           ref={(ref) => { this.dateTimeFieldRefs.until = ref; }}
                           dateTime={
-                          this.state.freeformInputs.until ?
-                            DEFAULT_UNTIL :
-                            this.state.until
-                        }
+                            this.state.freeformInputs.until ?
+                              DEFAULT_UNTIL :
+                              this.state.until
+                          }
                           defaultText={this.state.until}
                           onChange={this.setCustomStartEnd.bind(this, 'until')}
                           minDate={moment(this.state.since, MOMENT_FORMAT).add(1, 'days')}
                           format={MOMENT_FORMAT}
                           inputFormat={MOMENT_FORMAT}
                           inputProps={{
-                          onKeyPress: this.onEnter.bind(this),
-                          onFocus: this.setCustomStartEnd.bind(this),
-                        }}
+                            onKeyPress: this.onEnter.bind(this),
+                            onFocus: this.setCustomStartEnd.bind(this),
+                          }}
                         />
                       </div>
                     </InputGroup>
                   </div>
+                </PopoverSection>
+              </FormGroup>
+            </Tab>
+            {/* adding third tab for rule view and enable user to create time range relative to ref date */}
+            <Tab eventKey={3} title="Rule">
+              <FormGroup>
+                <PopoverSection
+                  title="Relative to reference date"
+                  isSelected={this.state.type === TYPES.CUSTOM_RULE}
+                  onSelect={this.setCustomRule.bind(this)}
+                >
+                <div className="clearfix centered" style={{ marginTop: '13px' }}>
+                  <div style={{ width: '60px', marginTop: '-4px' }} className="input-inline">
+                    <sapn>Rule</sapn>
+                    <DropdownButton
+                      bsSize="small"
+                      componentClass={InputGroup.Button}
+                      id="input-dropdown-rel"
+                      title={this.state.rel}
+                      onFocus={this.setCustomRule.bind(this)}
+                    >
+                      <MenuItem
+                        onSelect={this.setCustomRule.bind(this, 'rel')}
+                        key={RELATIVE_TIME_OPTIONS.LAST}
+                        eventKey={RELATIVE_TIME_OPTIONS.LAST}
+                        active={this.state.rel === RELATIVE_TIME_OPTIONS.LAST}
+                      >Last
+                        </MenuItem>
+                      <MenuItem
+                        onSelect={this.setCustomRule.bind(this, 'rel')}
+                        key={RELATIVE_TIME_OPTIONS.NEXT}
+                        eventKey={RELATIVE_TIME_OPTIONS.NEXT}
+                        active={this.state.rel === RELATIVE_TIME_OPTIONS.NEXT}
+                      >Next
+                        </MenuItem>
+                    </DropdownButton>
+                  </div>
+                  <div style={{ width: '80px', marginTop: '-4px' }} className="input-inline">
+                    <sapn>Frequency</sapn>
+                    <FormControl
+                      bsSize="small"
+                      type="text"
+                      onChange={event => (
+                        this.setCustomRule.call(this, 'num', event.target.value)
+                      )}
+                      onFocus={this.setCustomRule.bind(this)}
+                      onKeyPress={this.onEnter.bind(this)}
+                      value={this.state.num}
+                      style={{ height: '30px' }}
+                    />
+                  </div>
+                  <div style={{ width: '90px', marginTop: '-4px' }} className="input-inline">
+                    <sapn>Unit</sapn>
+                    <DropdownButton
+                      bsSize="small"
+                      componentClass={InputGroup.Button}
+                      id="input-dropdown-grain"
+                      title={this.state.grain}
+                      onFocus={this.setCustomRule.bind(this)}
+                    >
+                      {ruleGrainOptions}
+                    </DropdownButton>
+                  </div>
+                </div>
+                <div ref={(ref) => { this.startEndSectionRef = ref; }} style={{ marginTop: '13px' }}>
+                  <sapn>Reference Date</sapn>
+                  <InputGroup>
+                    <div style={{ margin: '5px 0' }}>
+                      <DateTimeField
+                        ref={(ref) => { this.dateTimeFieldRefs.until = ref; }}
+                        dateTime={
+                          this.state.freeformInputs.until ?
+                            DEFAULT_UNTIL :
+                            this.state.until
+                        }
+                        defaultText={this.state.until}
+                        onChange={this.setCustomRuleStartEnd.bind(this, 'until')}
+                        format={MOMENT_FORMAT}
+                        inputFormat={MOMENT_FORMAT}
+                        inputProps={{
+                          onKeyPress: this.onEnter.bind(this),
+                          onFocus: this.setCustomRuleStartEnd.bind(this),
+                        }}
+                      />
+                    </div>
+                  </InputGroup>
+                </div>
                 </PopoverSection>
               </FormGroup>
             </Tab>
@@ -359,6 +544,11 @@ export default class DateFilterControl extends React.Component {
   render() {
     let value = this.props.value || defaultProps.value;
     value = value.split(SEPARATOR).map(v => v.replace('T00:00:00', '') || '∞').join(SEPARATOR);
+    // diaplay single time if start and end are same
+    let values = value.split(SEPARATOR);
+    if (values.length == 2 && values[0] == values[1])
+      value = values[0]
+
     return (
       <div>
         <ControlHeader {...this.props} />

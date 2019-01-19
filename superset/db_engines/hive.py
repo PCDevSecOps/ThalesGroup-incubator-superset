@@ -70,10 +70,10 @@ def add_http_mode(username='', password='', port=10001,
     import base64
     from thrift.transport.THttpClient import THttpClient
     _transport = THttpClient(host, port=port, path=httpPath)
-    _transport.setCustomHeaders({'Authorization': 'Basic '+base64.b64encode(ap).strip()})
-    #base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
-    #header = ("Authorization: Basic %s" % base64string) 
-    return bytes(_transport, 'utf-8')
+    #_transport.setCustomHeaders({'Authorization': 'Basic '+base64.b64encode(ap).strip()})
+    credentials = base64.b64encode(ap.encode('utf-8'))
+    _transport.setCustomHeaders({"Authorization": "Basic " + credentials.decode('utf-8')})
 
+    return _transport
 
   

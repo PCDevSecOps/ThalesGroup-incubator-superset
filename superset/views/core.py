@@ -62,6 +62,7 @@ from .base import (
 )
 from .utils import bootstrap_user_data
 from superset.views.superset_decorators import redirect_to_target_url
+from superset.db_engines.hive import update_connect_args
 
 config = app.config
 stats_logger = config.get('STATS_LOGGER')
@@ -1707,6 +1708,9 @@ class Superset(BaseSupersetView):
                 .get('extras', {})
                 .get('engine_params', {})
                 .get('connect_args', {}))
+
+            
+            update_connect_args(make_url(uri),connect_args)
 
             if configuration:
                 connect_args['configuration'] = configuration

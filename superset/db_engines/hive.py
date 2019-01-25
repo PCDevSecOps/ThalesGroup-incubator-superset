@@ -9,6 +9,8 @@ from pyhive import hive
 from TCLIService import ttypes
 from thrift import Thrift
 
+from superset.db_engines.THttpTransport.THttpClientTransport import THttpClientTransport 
+from thrift.transport.TTransport import TBufferedTransport
 
 # TODO: contribute back to pyhive.
 def fetch_logs(self, max_rows=1024,
@@ -49,31 +51,62 @@ def fetch_logs(self, max_rows=1024,
                 break
         return '\n'.join(logs)
 
+def update_connect_args(url , connect_args):
+    #  set thrift_transport to handle http transport mode in hive
+    if(url.drivername == 'hive'):
+        thrift_transport = get_http_thrift_transport(url,connect_args)
+        if(thrift_transport is not None):
+            connect_args['thrift_transport'] = thrift_transport
+    else:
+        return        
 
-def connect(*args, **kwargs):
-    print(kwargs)
-    kwargs['transportMode'] = 'http'
-    #if 'transportMode' in kwargs and kwargs['transportMode'] == 'http':
-    params = ['host', 'username', 'password', 'port', 'httpPath', 'transportMode']
-    kwargs['thrift_transport'] = add_http_mode(
-        **dict(filter(lambda i: i[0] in params, kwargs.items())))
-    # remove unnecessary keys
-    for param in params:
-        kwargs.pop(param, None)
-    return hive.Connection(*args, **kwargs)
+def get_http_thrift_transport(url , kwargs):
+    if ( 'transport_mode' in kwargs  and  kwargs['transport_mode'] == 'http' ):
+        host = url.host
+        port = url.port
+        username = url.username
+        
+        password = url.password
+        if(password is None):
+           password = 'x'
 
+        http_path = 'cliservice' 
+        if('http_path' in kwargs):
+            http_path = kwargs['http_path']
+              
+        kerberos_service_name = None
+        if('kerberos_service_name' in kwargs):
+            kerberos_service_name = kwargs['kerberos_service_name']
 
-def add_http_mode(username='', password='', port=10001,
-                  httpPath='/cliservice', host='127.0.0.1',
-                  transportMode='http'):
-    ap = '%s:%s' % (username, password)
-    import base64
-    from thrift.transport.THttpClient import THttpClient
-    _transport = THttpClient(host, port=port, path=httpPath)
-    #_transport.setCustomHeaders({'Authorization': 'Basic '+base64.b64encode(ap).strip()})
-    credentials = base64.b64encode(ap.encode('utf-8'))
-    _transport.setCustomHeaders({"Authorization": "Basic " + credentials.decode('utf-8')})
+        mutual_auth = 'OPTIONAL'
+        if('mutual_auth' in kwargs):
+            mutual_auth = kwargs['mutual_auth']
 
-    return _transport
+        auth = "NONE"
+        if('auth' in kwargs):
+            auth = kwargs['auth']
+        
+        client = THttpClientTransport("http://{}:{}/{}".format(host, port, http_path))
+        if auth == 'KERBEROS':
+            client.set_kerberos_auth(mutual_auth,kerberos_service_name)
+        else:  
+            client.set_basic_auth(username, password)  
+
+        # remove custom vars not req in phive 
+        exrta_params = ['transport_mode','mutual_auth','http_path']   
+        for param in exrta_params:
+            kwargs.pop(param, None)
+       
+        # reset below value to none as per phive condition to set custom thrift_transport
+        kwargs['host'] = None
+        kwargs['port'] = None
+        kwargs['password'] = None
+        kwargs['auth'] = None
+        kwargs['kerberos_service_name'] = None    
+
+        return TBufferedTransport(client)
+    else:
+         return None
+     
 
   

@@ -50,6 +50,7 @@ custom_password_store = config.get('SQLALCHEMY_CUSTOM_PASSWORD_STORE')
 stats_logger = config.get('STATS_LOGGER')
 metadata = Model.metadata  # pylint: disable=no-member
 from superset.models.helpers import has_kerberos_ticket
+from superset.db_engines.hive import update_connect_args
 
 PASSWORD_MASK = 'X' * 10
 
@@ -762,6 +763,8 @@ class Database(Model, AuditMixinNullable, ImportMixin):
                 effective_username))
         if configuration:
             params['connect_args'] = {'configuration': configuration}
+
+        update_connect_args(url,params['connect_args'])
 
         DB_CONNECTION_MUTATOR = config.get('DB_CONNECTION_MUTATOR')
         if DB_CONNECTION_MUTATOR:

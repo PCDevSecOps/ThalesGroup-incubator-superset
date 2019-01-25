@@ -764,7 +764,8 @@ class Database(Model, AuditMixinNullable, ImportMixin):
         if configuration:
             params['connect_args'] = {'configuration': configuration}
 
-        update_connect_args(url,params['connect_args'])
+        if('connect_args' in params):
+            update_connect_args(url,params['connect_args'])
 
         DB_CONNECTION_MUTATOR = config.get('DB_CONNECTION_MUTATOR')
         if DB_CONNECTION_MUTATOR:

@@ -21,7 +21,9 @@ import time
 import django.utils.encoding
 
 LOG = logging.getLogger(__name__)
-
+REST_RESPONSE_SIZE = 2000
+WARN_LEVEL_CALL_DURATION_MS = 5000
+INFO_LEVEL_CALL_DURATION_MS = 1000
 
 def smart_unicode(s, strings_only=False, errors='strict', encoding='utf-8'):
   """
@@ -103,7 +105,7 @@ class Resource(object):
                                 clear_cookies=clear_cookies)
 
     if log_response:
-      log_length = 2000
+      log_length = REST_RESPONSE_SIZE
       duration = time.time() - start_time
       message = "%s %s Got response%s: %s%s" % (
           method,
@@ -202,9 +204,9 @@ class Resource(object):
 
 # Same in thrift_util.py for not losing the trace class
 def log_if_slow_call(duration, message, logger):
-  if duration >= 5:
+  if duration >= WARN_LEVEL_CALL_DURATION_MS / 1000 :
     logger.warn('SLOW: %.2f - %s' % (duration, message))
-  elif duration >= 1:
+  elif duration >= INFO_LEVEL_CALL_DURATION_MS / 1000 :
     logger.info('SLOW: %.2f - %s' % (duration, message))
   else:
     logger.debug(message)

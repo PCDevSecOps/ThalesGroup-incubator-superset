@@ -35,10 +35,10 @@ LOG = logging.getLogger(__name__)
 
 CACHE_SESSION = {}
 CACHE_SESSION_LOCK = threading.Lock()
+REST_CONN_TIMEOUT = 120
 
 def get_request_session(url, logger):
   global CACHE_SESSION, CACHE_SESSION_LOCK
-
   if CACHE_SESSION.get(url) is None:
     with CACHE_SESSION_LOCK:
       CACHE_SESSION[url] = requests.Session()
@@ -108,16 +108,24 @@ class HttpClient(object):
     short_url = '%(scheme)s://%(netloc)s' % {'scheme': parsed_uri.scheme, 'netloc': parsed_uri.netloc}
     return short_url
 
-  def set_kerberos_auth(self,mutual_auth ,principal):
+  def set_kerberos_auth(self,mutual_authentication,
+            service, delegate, force_preemptive,
+            principal, hostname_override,
+            sanitize_mutual_error_response, send_cbt):
     """Set up kerberos auth for the client, based on the current ticket."""
-    if mutual_auth == 'OPTIONAL':
-      self._session.auth = HTTPKerberosAuth(mutual_authentication=OPTIONAL,principal=principal)
-    elif mutual_auth == 'REQUIRED':
-      self._session.auth = HTTPKerberosAuth(mutual_authentication=REQUIRED,principal=principal)
-    elif mutual_auth == 'DISABLED':
-      self._session.auth = HTTPKerberosAuth(mutual_authentication=DISABLED,principal=principal)
-    else:  
-      self._session.auth = HTTPKerberosAuth(mutual_authentication=OPTIONAL,principal=principal)
+   
+    mutual_authentication_val = OPTIONAL
+
+    if mutual_authentication == 'OPTIONAL':
+      mutual_authentication_val = OPTIONAL
+    elif mutual_authentication == 'REQUIRED':
+      mutual_authentication_val = REQUIRED
+    elif mutual_authentication == 'DISABLED':
+      mutual_authentication_val = DISABLED
+  
+    self._session.auth = HTTPKerberosAuth(mutual_authentication= mutual_authentication_val, service = service, delegate = delegate, force_preemptive = force_preemptive,
+            principal = principal,hostname_override =  hostname_override,
+            sanitize_mutual_error_response = sanitize_mutual_error_response, send_cbt = send_cbt)
 
     return self
 
@@ -157,7 +165,7 @@ class HttpClient(object):
     return self._session.headers.copy()
 
   def execute(self, http_method, path, params=None, data=None, headers=None, allow_redirects=False, urlencode=True,
-              files=None, clear_cookies=False, timeout=120):
+              files=None, clear_cookies=False, timeout= REST_CONN_TIMEOUT):
     """
     Submit an HTTP request.
     @param http_method: GET, POST, PUT, DELETE

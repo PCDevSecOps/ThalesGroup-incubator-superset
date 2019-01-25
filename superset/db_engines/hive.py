@@ -61,7 +61,7 @@ def update_connect_args(url , connect_args):
         return        
 
 def get_http_thrift_transport(url , kwargs):
-    if ( 'transport_mode' in kwargs  and  kwargs['transport_mode'] == 'http' ):
+    if ( 'transport_mode' in kwargs  and  kwargs['transport_mode'].lower() == 'http' ):
         host = url.host
         port = url.port
         username = url.username
@@ -70,30 +70,60 @@ def get_http_thrift_transport(url , kwargs):
         if(password is None):
            password = 'x'
 
+        #  expose kerberos specific variables and set default values HTTPKerberosAuth class 
         http_path = 'cliservice' 
         if('http_path' in kwargs):
             http_path = kwargs['http_path']
-              
-        kerberos_service_name = None
-        if('kerberos_service_name' in kwargs):
-            kerberos_service_name = kwargs['kerberos_service_name']
 
-        mutual_auth = 'OPTIONAL'
-        if('mutual_auth' in kwargs):
-            mutual_auth = kwargs['mutual_auth']
+        #  set principal value used in http mode 
+        principal = None
+        if('principal' in kwargs):
+            principal = kwargs['principal']
+
+        mutual_authentication = 'OPTIONAL'
+        if('mutual_authentication' in kwargs):
+            mutual_authentication = kwargs['mutual_authentication']
+
+        service = "HTTP" 
+        if('service' in kwargs):
+            service = kwargs['service']
+
+        delegate = False
+        if('delegate' in kwargs):
+            delegate = kwargs['delegate']
+
+        force_preemptive = False
+        if('force_preemptive' in kwargs):
+            force_preemptive = kwargs['force_preemptive']
+
+        hostname_override=None
+        if('hostname_override' in kwargs):
+            hostname_override = kwargs['hostname_override']
+
+        sanitize_mutual_error_response=True
+        if('sanitize_mutual_error_response' in kwargs):
+            sanitize_mutual_error_response = kwargs['sanitize_mutual_error_response']
+
+        send_cbt=True
+        if('send_cbt' in kwargs):
+            send_cbt = kwargs['send_cbt']    
 
         auth = "NONE"
         if('auth' in kwargs):
             auth = kwargs['auth']
+           
         
         client = THttpClientTransport("http://{}:{}/{}".format(host, port, http_path))
         if auth == 'KERBEROS':
-            client.set_kerberos_auth(mutual_auth,kerberos_service_name)
+            client.set_kerberos_auth(mutual_authentication,
+            service, delegate, force_preemptive,
+            principal, hostname_override,
+            sanitize_mutual_error_response, send_cbt)
         else:  
             client.set_basic_auth(username, password)  
 
         # remove custom vars not req in phive 
-        exrta_params = ['transport_mode','mutual_auth','http_path']   
+        exrta_params = ['principal','transport_mode','mutual_authentication','http_path','service','delegate','force_preemptive','hostname_override','sanitize_mutual_error_response','send_cbt']   
         for param in exrta_params:
             kwargs.pop(param, None)
        

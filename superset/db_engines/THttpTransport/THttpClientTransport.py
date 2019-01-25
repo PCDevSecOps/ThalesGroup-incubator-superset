@@ -49,8 +49,14 @@ class THttpClientTransport(TTransportBase):
   def open(self):
     pass
 
-  def set_kerberos_auth(self,mutual_auth, principal):
-    self._client.set_kerberos_auth(mutual_auth,principal)
+  def set_kerberos_auth(self,mutual_authentication,
+            service, delegate, force_preemptive,
+            principal, hostname_override,
+            sanitize_mutual_error_response, send_cbt):
+    self._client.set_kerberos_auth(mutual_authentication,
+            service, delegate, force_preemptive,
+            principal, hostname_override,
+            sanitize_mutual_error_response, send_cbt)
 
   def set_basic_auth(self, username, password):
     self._client.set_basic_auth(username, password)

@@ -99,6 +99,8 @@ APP_NAME = 'Superset'
 
 # Uncomment to setup an App icon
 APP_ICON = '/static/assets/images/guavus_logo.svg'
+APP_SWITCHER_ICON = '/static/assets/images/iconApps.svg'
+NEW_WINDOW_ICON = '/static/assets/images/appsMenuOpensNewWindowIconWhite.svg'
 
 # Druid query timezone
 # tz.tzutc() : Using utc timezone
@@ -169,6 +171,56 @@ LANGUAGES = {
     'pt': {'flag': 'pt', 'name': 'Portuguese'},
     'pt_BR': {'flag': 'br', 'name': 'Brazilian Portuguese'},
     'ru': {'flag': 'ru', 'name': 'Russian'},
+}
+# App Switcher JSON
+APP_SWITCHER = {
+  "currentApp": "SuperSet",
+  "apps": [
+    [
+      {
+        "id": 1,
+        "image": "/static/assets/images/superset_1.png",
+        "description": "Superset",
+        "url": "/superseturl/",
+        "tooltip": "superset",
+        "name": "superset",
+        "isenable": "false",
+        "isVisible": True
+      },
+      {
+        "id": 2,
+        "image": "/static/assets/images/Icon_Playbook.svg",
+        "description": "Data Playbook",
+        "url": "/",
+        "tooltip": "Data Playbook",
+        "name": "playbook",
+        "isenable": "true",
+        "isVisible": True
+      }
+    ],
+    [
+      {
+        "id": 3,
+        "image": "/static/assets/images/Icon_datasetManager.svg",
+        "description": "Dataset Manager",
+        "url": "/datasetManager/",
+        "tooltip": "datasetManager",
+        "name": "UM",
+        "isenable": "true",
+        "isVisible": True
+      },
+      {
+        "id": 4,
+        "image": "/static/assets/images/um_app.svg",
+        "description": "User Management",
+        "url": "/um/",
+        "tooltip": "User Management",
+        "name": "UM",
+        "isenable": "true",
+        "isVisible": True
+      }
+    ]
+  ]
 }
 # ---------------------------------------------------
 # Image and file configuration

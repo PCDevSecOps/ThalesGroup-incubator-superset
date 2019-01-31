@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20.06278">
+  <defs>
+    <style>
+      .a {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <title>iconApps</title>
+  <g>
+    <ellipse class="a" cx="2.5" cy="2.50785" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="10" cy="2.50785" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="17.5" cy="2.50785" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="2.5" cy="10.03139" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="10" cy="10.03139" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="17.5" cy="10.03139" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="2.5" cy="17.55493" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="17.5" cy="17.55493" rx="2.5" ry="2.50785"/>
+    <ellipse class="a" cx="10" cy="17.55493" rx="2.5" ry="2.50785"/>
+  </g>
+</svg>

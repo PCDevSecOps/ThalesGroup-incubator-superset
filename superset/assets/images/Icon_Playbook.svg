@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="144px" height="144px" viewBox="0 0 144 144" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon_huntPlaybook</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="117.119122%" y1="178.812627%" x2="-92.2868846%" y2="-39.8778812%" id="linearGradient-1">
+            <stop stop-color="#2E3035" offset="0%"></stop>
+            <stop stop-color="#C9D6E8" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-2" cx="72" cy="71" r="7"></circle>
+        <filter x="-14.3%" y="-14.3%" width="128.6%" height="128.6%" filterUnits="objectBoundingBox" id="filter-3">
+            <feGaussianBlur stdDeviation="1.5" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
+            <feOffset dx="-1" dy="1" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+        <path d="M116.148113,66.2421875 C114.135658,45.4521406 97.5478594,28.8643418 76.7578125,26.8518867 L76.7578125,16 L68.2421875,16 L68.2421875,26.8518867 C47.4521406,28.8643418 30.8643418,45.4521406 28.8518867,66.2421875 L18,66.2421875 L18,74.7578125 L28.8518867,74.7578125 C30.8643418,95.5478594 47.4521406,112.135658 68.2421875,114.148113 L68.2421875,125 L76.7578125,125 L76.7578125,114.148113 C97.5478594,112.135658 114.135658,95.5476465 116.148113,74.7578125 L127,74.7578125 L127,66.2421875 L116.148113,66.2421875 Z M107.582672,74.7578125 C105.641535,90.8474473 92.8474473,103.641535 76.7578125,105.582672 L76.7578125,94.7695313 L68.2421875,94.7695313 L68.2421875,105.582672 C52.1525527,103.641535 39.3584648,90.8474473 37.4173281,74.7578125 L48.2304688,74.7578125 L48.2304688,66.2421875 L37.4173281,66.2421875 C39.3584648,50.1525527 52.1525527,37.3584648 68.2421875,35.4173281 L68.2421875,46.2304688 L76.7578125,46.2304688 L76.7578125,35.4173281 C92.8474473,37.358252 105.641535,50.1523398 107.582672,66.2421875 L96.7695313,66.2421875 L96.7695313,74.7578125 L107.582672,74.7578125 Z" id="path-4"></path>
+        <filter x="-1.8%" y="-1.8%" width="103.7%" height="103.7%" filterUnits="objectBoundingBox" id="filter-5">
+            <feGaussianBlur stdDeviation="1.5" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
+            <feOffset dx="-1" dy="1" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Icon_huntPlaybook" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Oval">
+            <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+            <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+        </g>
+        <g id="Shape">
+            <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-4"></use>
+            <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
+        </g>
+    </g>
+</svg>

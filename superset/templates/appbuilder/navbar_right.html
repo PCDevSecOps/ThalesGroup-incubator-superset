@@ -1,3 +1,42 @@
+{% set app_switcher_icon = appbuilder.app.config.get('APP_SWITCHER_ICON') %}
+{% set app_switcher = appbuilder.app.config.get('APP_SWITCHER') %}
+{% set newWindowIcon = appbuilder.app.config.get('NEW_WINDOW_ICON') %}
+
+<li id="app-switcher" class="icon" style="width: 50px; float: left;">
+  <a class="dropdown-toggle" data-toggle="dropdown">
+    <img src="{{ app_switcher_icon }}" alt="{{ appbuilder.app_name }}" />
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <div class="arrow-up"></div>
+    <div class="container">
+      <table class="dropdown">
+        {% for apps in app_switcher.apps %}
+        <tr>
+          {% for app in apps %}
+          <td class="dataCell">
+            <div class="innerCellNormal" title="{{app.get('tooltip')}}">
+              <div class="itemIcon">
+                <img src="{{ newWindowIcon }}"/>
+              </div>
+              {% if {{app.get('isenable')}} != 'true' %}
+              <div class="cellitem">
+                <img src="{{app.get('image')}}" class="cellImage"/><br>
+              </div>
+              {% endif %}
+              <label class="itemLabel">{{app.get('description')}}</label>
+            </div>
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+      <div class="footer">
+        <label class="footerLabel"><i>{{ appbuilder.app_name }}</i></label>
+      </div>
+    </div>
+  </ul>
+</li>
+
 
 {% set locale = session['locale'] %}
 {% if not locale %}

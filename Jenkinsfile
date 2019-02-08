@@ -2,7 +2,7 @@
 @Library('jenkins_lib')_
 
 pipeline {
-  agent any
+  agent {label 'slave'}
 
     environment {
     // Define global environment variables in this 
@@ -75,6 +75,13 @@ pipeline {
         }
       }
     }
+    // Creating Wheel file outside docker..Commenting for now
+    // stage('Create Wheel file') {
+    //   steps {
+    //     echo "Run Commmand to create wheel file"
+    //     sh  "./create_whl.sh"
+    //   }
+    // }
 
     stage("Deploy the particular plugin") {
       when {

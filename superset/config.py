@@ -99,7 +99,11 @@ ENABLE_PROXY_FIX = False
 APP_NAME = 'Superset'
 
 # Uncomment to setup an App icon
-APP_ICON = '/static/assets/images/guavus_logo.svg'
+USE_LIGHT_THEME = False
+
+APP_THEME =  'light-theme-superset' if USE_LIGHT_THEME == True else 'dark-theme-superset'
+
+APP_ICON = 'assets/images/guavus-logo-dark.svg' if USE_LIGHT_THEME == True else 'assets/images/guavus-logo-light.svg'
 
 # Druid query timezone
 # tz.tzutc() : Using utc timezone

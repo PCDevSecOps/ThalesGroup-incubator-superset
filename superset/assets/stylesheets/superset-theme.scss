@@ -1,0 +1,239 @@
+
+
+@mixin footer-theme($theme, $foreground) {
+
+  .navbar-default {
+    background-color: get-color($theme);
+  }
+  .navbar-default-template {
+    background-color: get-color($theme);
+  }
+
+  .footer-right {
+    .footer-right-label {
+      color: get-color($foreground);
+    }
+}
+
+.footer-left {
+  .footer-left-label {
+    color: get-color($foreground);
+  }
+}
+}
+
+@mixin  caret-theme($theme) {
+  .caret {
+    color: get-color($theme);
+  }
+}
+
+@mixin header-theme($theme, $foreground, $primary) {
+
+  .header-divider-line {
+       background-color: get-color($foreground, secondary);
+  }
+
+  .navbar-inverse .navbar-brand {
+    @include primary-text-color-theme($foreground);
+    font-size: font-size('heading');
+  }
+
+  .navbar-inverse .navbar-nav > li > a {
+    @include primary-text-color-theme($foreground);
+  }
+
+  .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
+    @include primary-text-color-theme($foreground);
+  }
+
+  .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus, .navbar-inverse .navbar-nav > li.active > a {
+    background-color: get-color($primary);
+    color: get-accent-color(get-color($theme, darker));
+  }
+
+  .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+    background-color: get-color($primary);
+    color: get-accent-color(get-color($theme, darker));
+  }
+
+  .navbar-inverse {
+
+    @include elevation('base');
+
+    background-color: get-color($theme);
+    border: 3px solid get-color($theme);
+    font-size: font-size('body');
+  }
+
+
+}
+
+@mixin panel-theme($theme) {
+  .panel {
+
+    @include elevation('paper');
+
+    background-color: get-color($theme);
+   // border: 3px solid get-color($theme);
+   // font-size: font-size('heading');
+  }
+}
+
+@mixin  fav-icon-theme($theme) {
+  .fave-unfave-icon .fa-star-o, .fave-unfave-icon .fa-star, .fave-unfave-icon .fa-star-o:hover, .fave-unfave-icon .fa-star:hover, .fave-unfave-icon .fa-star-o:active, .fave-unfave-icon .fa-star:active {
+    color: get-color($theme);
+  }
+}
+
+
+@mixin tab-theme($theme) {
+
+  .nav-tabs {
+    font-size: font-size('body');
+    color: get-accent-color(get-color($theme, dark));
+    border: none;
+  }
+
+  .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+    background-color: get-color($theme, dark);
+    font-weight: bold;
+    border: none;
+    font-size: font-size('body');
+    color: get-accent-color(get-color($theme, dark));
+}
+
+}
+
+@mixin tab-pane-theme($theme) {
+
+  .tab-pane {
+    background-color:  get-color($theme, darker) !important;
+  }
+
+}
+
+@mixin table-theme($theme, $primary) {
+
+  .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
+    .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+      border-top: 1px solid get-color($theme, disabled);
+  }
+
+  .table > tbody + tbody {
+    border-top: 2px solid get-color($theme, disabled);
+}
+
+.table > thead > tr > th {
+  font-size: font-size(display-medium)
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: get-color($primary, light);
+}
+}
+
+@mixin  link-theme($theme) {
+  a {
+    @include primary-text-color-theme($theme);
+  }
+
+}
+
+@mixin line-theme($theme) {
+
+  .hr {
+      border-top: 1px solid get-color($theme, disabled);
+  }
+}
+
+@mixin  input-theme($theme, $foreground) {
+
+  .form-control {
+    background-color: get-color($theme, default);
+    color: get-color($foreground, secondary);
+}
+
+input.form-control {
+  background-color: get-color($theme, default);
+  color: get-color($foreground, secondary);
+}
+}
+
+@mixin panel-title-theme($theme) {
+  .panel-primary .panel-title {
+    @include primary-text-color-theme($theme);
+  }
+}
+
+@mixin  dashboard-component-chart-holder($theme, $foreground) {
+   .dashboard-component-chart-holder {
+    color: get-accent-color(get-color($theme, dark)) !important;
+     background-color: get-color($theme, dark) !important;
+
+   }
+}
+
+@mixin dashboard-header($theme, $foreground, $primary) {
+  .dashboard-header {
+    @include primary-text-color-theme($foreground);
+    background-color: get-color($theme, dark) !important;
+  }
+
+  .dashboard-component-header {
+    color: get-accent-color(get-color($theme, dark)) !important;
+  }
+
+  .dashboard .chart-header .dropdown-menu li a:hover, .dashboard .dashboard-header .dropdown-menu li a:hover, .dashboard .chart-header .dropdown-menu li a:focus, .dashboard .dashboard-header .dropdown-menu li a:focus {
+    background-color: get-color($primary) !important;
+  }
+}
+
+@mixin dropdown-menu-theme($theme, $foreground) {
+  .dropdown-menu {
+      @include elevation(intrusive);
+      @include primary-text-color-theme($foreground);
+
+      background-color: get-color($theme);
+  }
+
+  .dropdown-menu > li > a {
+    @include primary-text-color-theme($foreground);
+  }
+
+  .dashboard .chart-header .dropdown-menu li a, .dashboard .dashboard-header .dropdown-menu li a {
+   color: get-accent-color(get-color($theme, dark)) !important;
+  }
+}
+
+@mixin button-default-theme($theme) {
+  .btn-default {
+    color: get-accent-color(get-color($theme, lighter));
+    background-color: get-color($theme);
+
+    &:hover {
+       background-color: get-state-color(get-color($theme, lighter), hover);
+    }
+  }
+}
+
+
+@mixin help-block-theme($theme) {
+
+  .help-block {
+    @include secondary-text-color-theme($theme);
+  }
+}
+
+@mixin primary-text-color-theme($theme) {
+  color: get-color($theme);
+}
+
+@mixin  secondary-text-color-theme($theme) {
+  color: get-color($theme, secondary);
+}
+
+@mixin  disabled-text-color-theme($theme) {
+  color: get-color($theme, disabled);
+}
+

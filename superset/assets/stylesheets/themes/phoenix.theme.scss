@@ -1,0 +1,52 @@
+@import './phoenix.skin';
+@import './phoenix.normalize';
+@import './phoenix.structure';
+
+@import '../phoenix/styles';
+
+@import '../superset-theme';
+
+
+$gvs-blue: create-palette(#00A699);
+$gvs-orange: create-palette(#FF8300);
+
+$dark-theme: create-theme($gvs-blue, $gvs-orange, null, true);
+
+$light-theme: create-theme($gvs-blue, $gvs-orange, null, true);
+
+@mixin gvs-theme($theme) {
+
+  $primary: map-get($theme, brand-primary-color);
+  $secondary: map-get($theme, brand-secondary-color);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+  $visualization: map-get($theme, visualization);
+  $status: map-get($theme, status-color);
+
+   @include phoenix-theme($theme);
+   @include footer-theme($background, $foreground);
+   @include header-theme($background, $foreground, $primary);
+   @include panel-theme($background);
+   @include tab-theme($primary);
+   @include table-theme($foreground, $primary);
+   @include line-theme($foreground);
+   @include input-theme($background, $foreground);
+   @include panel-title-theme($foreground);
+   @include help-block-theme($foreground);
+   @include dashboard-component-chart-holder($background, $foreground);
+   @include dashboard-header($background, $foreground, $primary);
+   @include dropdown-menu-theme($background, $foreground);
+   @include button-default-theme($primary);
+   @include caret-theme($foreground);
+   @include link-theme($foreground);
+   @include tab-pane-theme($background);
+   @include fav-icon-theme($foreground);
+}
+
+.dark-theme-superset {
+  @include gvs-theme($dark-theme);
+}
+
+.light-theme-superset {
+@include gvs-theme($light-theme);
+}

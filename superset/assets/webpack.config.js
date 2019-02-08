@@ -68,6 +68,15 @@ const config = {
           'less-loader',
         ],
       },
+      {
+        test: /\.scss$/,
+        include: APP_DIR,
+        use: [
+          isDevMode ? MiniCssExtractPlugin.loader : 'style-loader',
+          'css-loader',
+          'sass-loader',
+        ],
+      },
       /* for css linking images */
       {
         test: /\.png$/,

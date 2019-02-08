@@ -38,6 +38,8 @@ spec:
           value: "6379"
         - name: SUPERSET_ENV
           value: local
+        - name: SUPERSET_THEME
+          value: "{{ SUPERSET_THEME }}"
         - name: IS_KERBEROS_ENABLED
           value: "{{ superset_kerberos_enabled }}"
         - name: AUTH_ROLE_ADMIN

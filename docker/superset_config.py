@@ -25,6 +25,9 @@ def get_env_variable(var_name, default=None):
                         .format(var_name)
             raise EnvironmentError(error_msg)
 
+# theme support
+SUPERSET_THEME = get_env_variable('SUPERSET_THEME')
+
 # LDAP configuration
 AUTH_TYPE = eval(get_env_variable('AUTH_TYPE'))
 

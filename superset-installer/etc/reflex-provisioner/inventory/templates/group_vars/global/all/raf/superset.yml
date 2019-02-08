@@ -69,6 +69,9 @@ superset_host_base_dir: "/opt/guavus/superset"
 superset_host_k8s_dir: "{{ superset_host_base_dir }}/deployment/k8s"
 superset_host_sql_dir: "{{ superset_host_base_dir }}/deployment/sql"
 
+# Theme support variable
+SUPERSET_THEME: "light"
+
 #------------------------------------------------------------------#
 #                      Kerberos Config                               #
 #------------------------------------------------------------------#

@@ -1,4 +1,5 @@
 FROM python:3.6.5
+
 MAINTAINER Arpit Agarwal <arpit.agarwal@guavus.com>
 
 # Configure environment
@@ -7,28 +8,30 @@ ENV user=guavus-raf
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     HOME=/home/${user} \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    PATH=/home/${user}/incubator-superset/superset/bin:$PATH \
+    PYTHONPATH=./superset/:$PYTHONPATH
     
-RUN useradd --user-group --create-home --no-log-init --shell /bin/bash ${user}
-
-RUN apt-get update -y
-
-RUN apt-get install -y build-essential libssl-dev \
-        libffi-dev python3-dev libsasl2-dev libldap2-dev \
-        libsasl2-modules libsasl2-2 libsasl2-modules-gssapi-mit krb5-user \
-        && \
+RUN useradd --user-group --create-home --no-log-init --shell /bin/bash ${user} \
+    && \
     mkdir -p $HOME/incubator-superset \
     mkdir -p /etc/security/keytabs/ \
-    mkdir -p /etc/cert/ \
-    && \
+    mkdir -p /etc/cert/ && \
+    chmod +x /etc/cert && \
+    chmod +x /usr/local/bin && \
+    chown -R ${user}:${user} $HOME
+
+RUN apt-get update && \
+    apt-get install -y gcc build-essential libssl-dev \
+        libffi-dev libsasl2-dev libldap2-dev \
+        libsasl2-modules libsasl2-2 libsasl2-modules-gssapi-mit krb5-user && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/* && \
     apt-get autoremove -y && \
-    apt-get clean && rm -rf "/var/lib/apt/lists/*" && \
-    echo OK
-
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-    && apt-get install -y nodejs
-
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+    && \
+    apt-get install -y nodejs && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update \
     && apt-get install -y yarn
@@ -38,8 +41,9 @@ WORKDIR $HOME/incubator-superset
 COPY ./ ./
 
 RUN pip install --upgrade setuptools pip \
-    && pip install wheel && python ./setup.py bdist_wheel \ 
-    && pip install ./dist/*.whl \
+    && pip install --no-cache-dir wheel \
+    && python ./setup.py bdist_wheel \ 
+    && pip install --no-cache-dir ./dist/*.whl \
     && rm -rf /root/.cache/pip
 
 RUN cd superset/assets \
@@ -50,19 +54,14 @@ RUN cd superset/assets \
     && yarn cache clean \
     apt-get remove -y \
         \*-dev \
+        yarn \
+        setuptools \
         build-essential \
-        python-wheel
-
-RUN apt-get purge --auto-remove -y nodejs
-
-ENV PATH=/home/${user}/incubator-superset/superset/bin:$PATH \
-    PYTHONPATH=./superset/:$PYTHONPATH
+        python-wheel \
+    && \
+    apt-get purge --auto-remove -y nodejs yarn
 
 COPY docker-init.sh /usr/local/bin/
-
-RUN chmod +x /etc/cert
-RUN chmod +x /usr/local/bin
-RUN chown -R ${user}:${user} $HOME
 
 USER ${user}
 

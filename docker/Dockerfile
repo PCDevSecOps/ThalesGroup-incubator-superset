@@ -1,5 +1,4 @@
-FROM python:3.6.5
-
+FROM python:3.6-slim
 MAINTAINER Arpit Agarwal <arpit.agarwal@guavus.com>
 
 # Configure environment
@@ -22,9 +21,9 @@ RUN useradd --user-group --create-home --no-log-init --shell /bin/bash ${user} \
     chown -R ${user}:${user} $HOME
 
 RUN apt-get update && \
-    apt-get install -y gcc build-essential libssl-dev \
-        libffi-dev libsasl2-dev libldap2-dev \
-        libsasl2-modules libsasl2-2 libsasl2-modules-gssapi-mit krb5-user && \
+    apt-get install -y build-essential libssl-dev curl gcc \
+        libffi-dev python3-dev libsasl2-dev libldap2-dev \
+        libsasl2-modules libsasl2-2 libsasl2-modules-gssapi-mit libkrb5-dev krb5-user && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/* && \
     apt-get autoremove -y && \
@@ -42,7 +41,9 @@ COPY ./ ./
 
 RUN pip install --upgrade setuptools pip \
     && pip install --no-cache-dir wheel \
-    && python ./setup.py bdist_wheel \ 
+    && pip install --no-cache-dir pywinrm[kerberos]
+
+RUN python ./setup.py bdist_wheel \ 
     && pip install --no-cache-dir ./dist/*.whl \
     && rm -rf /root/.cache/pip
 

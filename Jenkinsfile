@@ -43,7 +43,7 @@ pipeline {
         stage("Unit test") {
           steps {
             echo "Run Commmands to execute unit test"
-            sh "./scripts/test_rpm.sh ${env.testWithDatabase}"
+            sh ./scripts/test_rpm.sh ${env.testWithDatabase}
           }
         }
         stage("Code coverage") {

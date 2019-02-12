@@ -2,7 +2,7 @@
 @Library('jenkins_lib')_
 
 pipeline {
-    agent {label 'slave'}
+    agent {label 'slave02'}
     environment {
     // Define global environment variables in this 
     WORKSPACE = pwd()

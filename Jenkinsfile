@@ -37,27 +37,14 @@ pipeline {
         echo "Updated Superset image tag"
       }
     }
-    stage("Build and test") {
-      parallel {
 
-        stage("Unit test") {
-          steps {
-            echo "Run Commmands to execute unit test"
-            sh ./scripts/test_rpm.sh ${env.testWithDatabase}
-          }
-        }
-        stage("Code coverage") {
-          steps {
-            echo "Run Commmands to execute code coverage test"
-          }
-        }
-        stage("Static code analysis or Checkstyle") {
-          steps {
-            echo "Run Commmands to execute static code analysis test"
-          }
-        }
+    stage("Unit test and Code Coverage") {
+      steps {
+        echo "Run Commmands to execute unit test"
+        sh "./scripts/test_rpm.sh ${env.testWithDatabase}"
       }
     }
+
     stage('Create RPMs') {
       steps {
         echo "Run Commmand to trigger rpm build"

@@ -62,6 +62,8 @@ RUN cd superset/assets \
     && \
     apt-get purge --auto-remove -y nodejs yarn
 
+RUN chown -R ${user}:${user} ./superset
+
 COPY docker-init.sh /usr/local/bin/
 
 USER ${user}

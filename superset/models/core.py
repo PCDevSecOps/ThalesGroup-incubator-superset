@@ -426,9 +426,6 @@ class Dashboard(Model, AuditMixinNullable, ImportMixin):
                 except Exception:
                     pass
 
-            if custom_url and custom_url != '':
-                return custom_url
-                
         return '/superset/dashboard/{}/'.format(self.slug or self.id)
 
     @property

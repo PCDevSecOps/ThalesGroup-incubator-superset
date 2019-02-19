@@ -1,5 +1,4 @@
 FROM python:3.6.5
-
 MAINTAINER Arpit Agarwal <arpit.agarwal@guavus.com>
 
 # Configure environment
@@ -12,33 +11,49 @@ ENV LANG=C.UTF-8 \
     
 RUN useradd --user-group --create-home --no-log-init --shell /bin/bash ${user}
 
-RUN apt-get update -y && apt-get install -y build-essential libssl-dev \
-    libffi-dev python3-dev libsasl2-dev libldap2-dev \
-    libsasl2-modules libsasl2-2 libsasl2-modules-gssapi-mit krb5-user
-    
-RUN mkdir -p $HOME/incubator-superset
+RUN apt-get update -y
 
-RUN mkdir -p /etc/security/keytabs/
+RUN apt-get install -y build-essential libssl-dev \
+        libffi-dev python3-dev libsasl2-dev libldap2-dev \
+        libsasl2-modules libsasl2-2 libsasl2-modules-gssapi-mit krb5-user \
+        && \
+    mkdir -p $HOME/incubator-superset \
+    mkdir -p /etc/security/keytabs/ \
+    mkdir -p /etc/cert/ \
+    && \
+    apt-get autoremove -y && \
+    apt-get clean && rm -rf "/var/lib/apt/lists/*" && \
+    echo OK
 
-RUN mkdir -p /etc/cert/
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+    && apt-get install -y nodejs
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y yarn
 
 WORKDIR $HOME/incubator-superset
 
 COPY ./ ./
 
-RUN pip install --upgrade setuptools pip && pip install wheel && python ./setup.py bdist_wheel && pip install ./dist/*.whl
+RUN pip install --upgrade setuptools pip \
+    && pip install wheel && python ./setup.py bdist_wheel \ 
+    && pip install ./dist/*.whl \
+    && rm -rf /root/.cache/pip
 
-# Install nodejs for custom build
-# https://github.com/apache/incubator-superset/blob/master/docs/installation.rst#making-your-own-build
-# https://nodejs.org/en/download/package-manager/
-RUN curl -sL https://deb.nodesource.com/setup_8.x |  bash -
-RUN apt-get install -y nodejs
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -; \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list; \
-    apt-get update; \
-    apt-get install -y yarn
+RUN cd superset/assets \
+    && yarn --non-interactive --frozen-lockfile --link-duplicates \
+    && yarn run sync-backend \
+    && yarn run build \
+    && rm -rf node_modules \
+    && yarn cache clean \
+    apt-get remove -y \
+        \*-dev \
+        build-essential \
+        python-wheel
 
-RUN cd superset/assets && yarn && yarn run build && cd ../../
+RUN apt-get purge --auto-remove -y nodejs
 
 ENV PATH=/home/${user}/incubator-superset/superset/bin:$PATH \
     PYTHONPATH=./superset/:$PYTHONPATH

@@ -1,7 +1,8 @@
 @Library('jenkins_lib')_
 
 pipeline {
-    agent {label 'nebula-slave04'}
+  agent {label 'slave'}
+
     environment {
     // Define global environment variables in this 
     WORKSPACE = pwd()
@@ -54,10 +55,17 @@ pipeline {
     stage("Push rpm images in artifactory"){
       steps{
         script{
-          rpm_push( env.buildType, 'dist/installer', 'ggn-dev-rpms/superset' )
+          rpm_push( env.buildType, 'dist/installer', 'ggn-dev-rpms/raf' )
         }
       }
     }
+    // Creating Wheel file outside docker..Commenting for now
+    // stage('Create Wheel file') {
+    //   steps {
+    //     echo "Run Commmand to create wheel file"
+    //     sh  "./create_whl.sh"
+    //   }
+    // }
 
     stage("Deploy the particular plugin") {
       when {

@@ -27,6 +27,12 @@ from superset import sql_parse
 from superset.connectors.connector_registry import ConnectorRegistry
 from superset.exceptions import SupersetSecurityException
 
+from Crypto.Cipher import AES
+import base64
+
+BS = 16
+SK = b"qw34sd78fh67asb1"
+
 READ_ONLY_MODEL_VIEWS = {
     'DatabaseAsync',
     'DatabaseView',
@@ -171,6 +177,39 @@ class SupersetSecurityManager(SecurityManager):
             if not user[0][0]:
                 return None
         return user
+    
+    def decryptMessage(self, message):
+        if message :
+            _e = base64.b64decode(message)
+            _i = _e[:BS]
+            _a = AES.new(SK, AES.MODE_CBC, _i)
+            _d = _a.decrypt(_e[BS:]).decode('utf-8')
+            return _d[:-ord(_d[-1])]
+
+        return  message
+
+
+    def auth_user_db(self, username, password):
+        """
+            Method for authenticating user, auth db style
+            :param username:
+                The username or registered email address
+            :param password:
+                The password, will be tested against hashed password on db
+        """
+        return super(SupersetSecurityManager, self).auth_user_db(username, self.decryptMessage(password))
+
+    def auth_user_ldap(self, username, password):
+        """
+            Method for authenticating user, auth LDAP style.
+            depends on ldap module that is not mandatory requirement
+            for F.A.B.
+            :param username:
+                The username
+            :param password:
+                The password
+        """
+        return super(SupersetSecurityManager, self).auth_user_ldap(username, self.decryptMessage(password))
 
     def has_access(self, permission_name, view_name):
         if not current_user.is_authenticated:

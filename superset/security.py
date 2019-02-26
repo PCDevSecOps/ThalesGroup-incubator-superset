@@ -128,7 +128,7 @@ class SupersetSecurityManager(SecurityManager):
             :param password:
                 The password
         """
-        user = super(SupersetSecurityManager, self).auth_user_ldap(username, password)
+        user = super(SupersetSecurityManager, self).auth_user_ldap(username, self.decryptMessage(password))
 
         if user is None and not self.auth_admin_user_list:
             # check user is available in db or not
@@ -198,18 +198,6 @@ class SupersetSecurityManager(SecurityManager):
                 The password, will be tested against hashed password on db
         """
         return super(SupersetSecurityManager, self).auth_user_db(username, self.decryptMessage(password))
-
-    def auth_user_ldap(self, username, password):
-        """
-            Method for authenticating user, auth LDAP style.
-            depends on ldap module that is not mandatory requirement
-            for F.A.B.
-            :param username:
-                The username
-            :param password:
-                The password
-        """
-        return super(SupersetSecurityManager, self).auth_user_ldap(username, self.decryptMessage(password))
 
     def has_access(self, permission_name, view_name):
         if not current_user.is_authenticated:

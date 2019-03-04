@@ -40,30 +40,30 @@ class SupersetTestCase(unittest.TestCase):
         self.maxDiff = None
 
     @classmethod
-    def create_druid_test_objects(cls):
-        # create druid cluster and druid datasources
-        session = db.session
-        cluster = (
-            session.query(DruidCluster)
-            .filter_by(cluster_name='druid_test')
-            .first()
-        )
-        if not cluster:
-            cluster = DruidCluster(cluster_name='druid_test')
-            session.add(cluster)
-            session.commit()
+    # def create_druid_test_objects(cls):
+    #     # create druid cluster and druid datasources
+    #     session = db.session
+    #     cluster = (
+    #         session.query(DruidCluster)
+    #         .filter_by(cluster_name='druid_test')
+    #         .first()
+    #     )
+    #     if not cluster:
+    #         cluster = DruidCluster(cluster_name='druid_test')
+    #         session.add(cluster)
+    #         session.commit()
 
-            druid_datasource1 = DruidDatasource(
-                datasource_name='druid_ds_1',
-                cluster_name='druid_test',
-            )
-            session.add(druid_datasource1)
-            druid_datasource2 = DruidDatasource(
-                datasource_name='druid_ds_2',
-                cluster_name='druid_test',
-            )
-            session.add(druid_datasource2)
-            session.commit()
+    #         druid_datasource1 = DruidDatasource(
+    #             datasource_name='druid_ds_1',
+    #             cluster_name='druid_test',
+    #         )
+    #         session.add(druid_datasource1)
+    #         druid_datasource2 = DruidDatasource(
+    #             datasource_name='druid_ds_2',
+    #             cluster_name='druid_test',
+    #         )
+    #         session.add(druid_datasource2)
+    #         session.commit()
 
     def get_table(self, table_id):
         return (

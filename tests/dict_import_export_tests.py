@@ -266,51 +266,51 @@ class DictImportExportTests(SupersetTestCase):
         imported = self.get_datasource(imported_cluster.id)
         self.assert_datasource_equals(datasource, imported)
 
-    def test_import_druid_1_col_1_met(self):
-        datasource, dict_datasource = self.create_druid_datasource(
-            'druid_1_col_1_met', id=ID_PREFIX + 2,
-            cols_names=['col1'], metric_names=['metric1'])
-        imported_cluster = DruidDatasource.import_from_dict(db.session,
-                                                            dict_datasource)
-        db.session.commit()
-        imported = self.get_datasource(imported_cluster.id)
-        self.assert_datasource_equals(datasource, imported)
-        self.assertEquals(
-            {DBREF: ID_PREFIX + 2, 'database_name': 'druid_test'},
-            json.loads(imported.params))
+    # def test_import_druid_1_col_1_met(self):
+    #     datasource, dict_datasource = self.create_druid_datasource(
+    #         'druid_1_col_1_met', id=ID_PREFIX + 2,
+    #         cols_names=['col1'], metric_names=['metric1'])
+    #     imported_cluster = DruidDatasource.import_from_dict(db.session,
+    #                                                         dict_datasource)
+    #     db.session.commit()
+    #     imported = self.get_datasource(imported_cluster.id)
+    #     self.assert_datasource_equals(datasource, imported)
+    #     self.assertEquals(
+    #         {DBREF: ID_PREFIX + 2, 'database_name': 'druid_test'},
+    #         json.loads(imported.params))
 
-    def test_import_druid_2_col_2_met(self):
-        datasource, dict_datasource = self.create_druid_datasource(
-            'druid_2_col_2_met', id=ID_PREFIX + 3, cols_names=['c1', 'c2'],
-            metric_names=['m1', 'm2'])
-        imported_cluster = DruidDatasource.import_from_dict(db.session,
-                                                            dict_datasource)
-        db.session.commit()
-        imported = self.get_datasource(imported_cluster.id)
-        self.assert_datasource_equals(datasource, imported)
+    # def test_import_druid_2_col_2_met(self):
+    #     datasource, dict_datasource = self.create_druid_datasource(
+    #         'druid_2_col_2_met', id=ID_PREFIX + 3, cols_names=['c1', 'c2'],
+    #         metric_names=['m1', 'm2'])
+    #     imported_cluster = DruidDatasource.import_from_dict(db.session,
+    #                                                         dict_datasource)
+    #     db.session.commit()
+    #     imported = self.get_datasource(imported_cluster.id)
+    #     self.assert_datasource_equals(datasource, imported)
 
-    def test_import_druid_override_append(self):
-        datasource, dict_datasource = self.create_druid_datasource(
-            'druid_override', id=ID_PREFIX + 3, cols_names=['col1'],
-            metric_names=['m1'])
-        imported_cluster = DruidDatasource.import_from_dict(db.session,
-                                                            dict_datasource)
-        db.session.commit()
-        table_over, table_over_dict = self.create_druid_datasource(
-            'druid_override', id=ID_PREFIX + 3,
-            cols_names=['new_col1', 'col2', 'col3'],
-            metric_names=['new_metric1'])
-        imported_over_cluster = DruidDatasource.import_from_dict(
-            db.session,
-            table_over_dict)
-        db.session.commit()
-        imported_over = self.get_datasource(imported_over_cluster.id)
-        self.assertEquals(imported_cluster.id, imported_over.id)
-        expected_datasource, _ = self.create_druid_datasource(
-            'druid_override', id=ID_PREFIX + 3,
-            metric_names=['new_metric1', 'm1'],
-            cols_names=['col1', 'new_col1', 'col2', 'col3'])
-        self.assert_datasource_equals(expected_datasource, imported_over)
+    # def test_import_druid_override_append(self):
+    #     datasource, dict_datasource = self.create_druid_datasource(
+    #         'druid_override', id=ID_PREFIX + 3, cols_names=['col1'],
+    #         metric_names=['m1'])
+    #     imported_cluster = DruidDatasource.import_from_dict(db.session,
+    #                                                         dict_datasource)
+    #     db.session.commit()
+    #     table_over, table_over_dict = self.create_druid_datasource(
+    #         'druid_override', id=ID_PREFIX + 3,
+    #         cols_names=['new_col1', 'col2', 'col3'],
+    #         metric_names=['new_metric1'])
+    #     imported_over_cluster = DruidDatasource.import_from_dict(
+    #         db.session,
+    #         table_over_dict)
+    #     db.session.commit()
+    #     imported_over = self.get_datasource(imported_over_cluster.id)
+    #     self.assertEquals(imported_cluster.id, imported_over.id)
+    #     expected_datasource, _ = self.create_druid_datasource(
+    #         'druid_override', id=ID_PREFIX + 3,
+    #         metric_names=['new_metric1', 'm1'],
+    #         cols_names=['col1', 'new_col1', 'col2', 'col3'])
+    #     self.assert_datasource_equals(expected_datasource, imported_over)
 
     def test_import_druid_override_sync(self):
         datasource, dict_datasource = self.create_druid_datasource(

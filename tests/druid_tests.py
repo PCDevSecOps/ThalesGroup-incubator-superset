@@ -94,8 +94,8 @@ class DruidTests(SupersetTestCase):
     """Testing interactions with Druid"""
 
     @classmethod
-    def setUpClass(cls):
-        cls.create_druid_test_objects()
+    # def setUpClass(cls):
+    #     cls.create_druid_test_objects()
 
     def get_test_cluster_obj(self):
         return DruidCluster(

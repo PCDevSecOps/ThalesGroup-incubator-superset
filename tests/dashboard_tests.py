@@ -110,33 +110,33 @@ class DashboardTests(SupersetTestCase):
         resp = self.get_resp(url, data=dict(data=json.dumps(data)))
         self.assertIn('SUCCESS', resp)
 
-    def test_save_dash_with_filter(self, username='admin'):
-        self.login(username=username)
-        dash = db.session.query(models.Dashboard).filter_by(
-            slug='world_health').first()
+    # def test_save_dash_with_filter(self, username='admin'):
+    #     self.login(username=username)
+    #     dash = db.session.query(models.Dashboard).filter_by(
+    #         slug='world_health').first()
 
-        positions = self.get_mock_positions(dash)
-        filters = {str(dash.slices[0].id): {'region': ['North America']}}
-        default_filters = json.dumps(filters)
-        data = {
-            'css': '',
-            'expanded_slices': {},
-            'positions': positions,
-            'dashboard_title': dash.dashboard_title,
-            'default_filters': default_filters,
-        }
+    #     positions = self.get_mock_positions(dash)
+    #     filters = {str(dash.slices[0].id): {'region': ['North America']}}
+    #     default_filters = json.dumps(filters)
+    #     data = {
+    #         'css': '',
+    #         'expanded_slices': {},
+    #         'positions': positions,
+    #         'dashboard_title': dash.dashboard_title,
+    #         'default_filters': default_filters,
+    #     }
 
-        url = '/superset/save_dash/{}/'.format(dash.id)
-        resp = self.get_resp(url, data=dict(data=json.dumps(data)))
-        self.assertIn('SUCCESS', resp)
+    #     url = '/superset/save_dash/{}/'.format(dash.id)
+    #     resp = self.get_resp(url, data=dict(data=json.dumps(data)))
+    #     self.assertIn('SUCCESS', resp)
 
-        updatedDash = db.session.query(models.Dashboard).filter_by(
-            slug='world_health').first()
-        new_url = updatedDash.url
-        self.assertIn('region', new_url)
+    #     updatedDash = db.session.query(models.Dashboard).filter_by(
+    #         slug='world_health').first()
+    #     new_url = updatedDash.url
+    #     self.assertIn('region', new_url)
 
-        resp = self.get_resp(new_url)
-        self.assertIn('North America', resp)
+    #     resp = self.get_resp(new_url)
+    #     self.assertIn('North America', resp)
 
     def test_save_dash_with_invalid_filters(self, username='admin'):
         self.login(username=username)
@@ -225,101 +225,101 @@ class DashboardTests(SupersetTestCase):
                 if key not in ['modified', 'changed_on']:
                     self.assertEqual(slc[key], resp['slices'][index][key])
 
-    def test_add_slices(self, username='admin'):
-        self.login(username=username)
-        dash = db.session.query(models.Dashboard).filter_by(
-            slug='births').first()
-        new_slice = db.session.query(models.Slice).filter_by(
-            slice_name='Energy Force Layout').first()
-        existing_slice = db.session.query(models.Slice).filter_by(
-            slice_name='Name Cloud').first()
-        data = {
-            'slice_ids': [new_slice.data['slice_id'],
-                          existing_slice.data['slice_id']],
-        }
-        url = '/superset/add_slices/{}/'.format(dash.id)
-        resp = self.client.post(url, data=dict(data=json.dumps(data)))
-        assert 'SLICES ADDED' in resp.data.decode('utf-8')
+    # def test_add_slices(self, username='admin'):
+    #     self.login(username=username)
+    #     dash = db.session.query(models.Dashboard).filter_by(
+    #         slug='births').first()
+    #     new_slice = db.session.query(models.Slice).filter_by(
+    #         slice_name='Energy Force Layout').first()
+    #     existing_slice = db.session.query(models.Slice).filter_by(
+    #         slice_name='Name Cloud').first()
+    #     data = {
+    #         'slice_ids': [new_slice.data['slice_id'],
+    #                       existing_slice.data['slice_id']],
+    #     }
+    #     url = '/superset/add_slices/{}/'.format(dash.id)
+    #     resp = self.client.post(url, data=dict(data=json.dumps(data)))
+    #     assert 'SLICES ADDED' in resp.data.decode('utf-8')
 
-        dash = db.session.query(models.Dashboard).filter_by(
-            slug='births').first()
-        new_slice = db.session.query(models.Slice).filter_by(
-            slice_name='Energy Force Layout').first()
-        assert new_slice in dash.slices
-        assert len(set(dash.slices)) == len(dash.slices)
+    #     dash = db.session.query(models.Dashboard).filter_by(
+    #         slug='births').first()
+    #     new_slice = db.session.query(models.Slice).filter_by(
+    #         slice_name='Energy Force Layout').first()
+    #     assert new_slice in dash.slices
+    #     assert len(set(dash.slices)) == len(dash.slices)
 
-        # cleaning up
-        dash = db.session.query(models.Dashboard).filter_by(
-            slug='births').first()
-        dash.slices = [
-            o for o in dash.slices if o.slice_name != 'Energy Force Layout']
-        db.session.commit()
+    #     # cleaning up
+    #     dash = db.session.query(models.Dashboard).filter_by(
+    #         slug='births').first()
+    #     dash.slices = [
+    #         o for o in dash.slices if o.slice_name != 'Energy Force Layout']
+    #     db.session.commit()
 
-    def test_remove_slices(self, username='admin'):
-        self.login(username=username)
-        dash = db.session.query(models.Dashboard).filter_by(
-            slug='births').first()
-        origin_slices_length = len(dash.slices)
+    # def test_remove_slices(self, username='admin'):
+    #     self.login(username=username)
+    #     dash = db.session.query(models.Dashboard).filter_by(
+    #         slug='births').first()
+    #     origin_slices_length = len(dash.slices)
 
-        positions = self.get_mock_positions(dash)
-        # remove one chart
-        chart_keys = []
-        for key in positions.keys():
-            if key.startswith('DASHBOARD_CHART_TYPE'):
-                chart_keys.append(key)
-        positions.pop(chart_keys[0])
+    #     positions = self.get_mock_positions(dash)
+    #     # remove one chart
+    #     chart_keys = []
+    #     for key in positions.keys():
+    #         if key.startswith('DASHBOARD_CHART_TYPE'):
+    #             chart_keys.append(key)
+    #     positions.pop(chart_keys[0])
 
-        data = {
-            'css': '',
-            'expanded_slices': {},
-            'positions': positions,
-            'dashboard_title': dash.dashboard_title,
-        }
+    #     data = {
+    #         'css': '',
+    #         'expanded_slices': {},
+    #         'positions': positions,
+    #         'dashboard_title': dash.dashboard_title,
+    #     }
 
-        # save dash
-        dash_id = dash.id
-        url = '/superset/save_dash/{}/'.format(dash_id)
-        self.client.post(url, data=dict(data=json.dumps(data)))
-        dash = db.session.query(models.Dashboard).filter_by(
-            id=dash_id).first()
+    #     # save dash
+    #     dash_id = dash.id
+    #     url = '/superset/save_dash/{}/'.format(dash_id)
+    #     self.client.post(url, data=dict(data=json.dumps(data)))
+    #     dash = db.session.query(models.Dashboard).filter_by(
+    #         id=dash_id).first()
 
-        # verify slices data
-        data = dash.data
-        self.assertEqual(len(data['slices']), origin_slices_length - 1)
+    #     # verify slices data
+    #     data = dash.data
+    #     self.assertEqual(len(data['slices']), origin_slices_length - 1)
 
-    def test_public_user_dashboard_access(self):
-        table = (
-            db.session
-            .query(SqlaTable)
-            .filter_by(table_name='birth_names')
-            .one()
-        )
-        # Try access before adding appropriate permissions.
-        self.revoke_public_access_to_table(table)
-        self.logout()
+    # def test_public_user_dashboard_access(self):
+    #     table = (
+    #         db.session
+    #         .query(SqlaTable)
+    #         .filter_by(table_name='birth_names')
+    #         .one()
+    #     )
+    #     # Try access before adding appropriate permissions.
+    #     self.revoke_public_access_to_table(table)
+    #     self.logout()
 
-        resp = self.get_resp('/chart/list/')
-        self.assertNotIn('birth_names</a>', resp)
+    #     resp = self.get_resp('/chart/list/')
+    #     self.assertNotIn('birth_names</a>', resp)
 
-        resp = self.get_resp('/dashboard/list/')
-        self.assertNotIn('/superset/dashboard/births/', resp)
+    #     resp = self.get_resp('/dashboard/list/')
+    #     self.assertNotIn('/superset/dashboard/births/', resp)
 
-        self.grant_public_access_to_table(table)
+    #     self.grant_public_access_to_table(table)
 
-        # Try access after adding appropriate permissions.
-        self.assertIn('birth_names', self.get_resp('/chart/list/'))
+    #     # Try access after adding appropriate permissions.
+    #     self.assertIn('birth_names', self.get_resp('/chart/list/'))
 
-        resp = self.get_resp('/dashboard/list/')
-        self.assertIn('/superset/dashboard/births/', resp)
+    #     resp = self.get_resp('/dashboard/list/')
+    #     self.assertIn('/superset/dashboard/births/', resp)
 
-        self.assertIn('Births', self.get_resp('/superset/dashboard/births/'))
+    #     self.assertIn('Births', self.get_resp('/superset/dashboard/births/'))
 
-        # Confirm that public doesn't have access to other datasets.
-        resp = self.get_resp('/chart/list/')
-        self.assertNotIn('wb_health_population</a>', resp)
+    #     # Confirm that public doesn't have access to other datasets.
+    #     resp = self.get_resp('/chart/list/')
+    #     self.assertNotIn('wb_health_population</a>', resp)
 
-        resp = self.get_resp('/dashboard/list/')
-        self.assertNotIn('/superset/dashboard/world_health/', resp)
+    #     resp = self.get_resp('/dashboard/list/')
+    #     self.assertNotIn('/superset/dashboard/world_health/', resp)
 
     def test_dashboard_with_created_by_can_be_accessed_by_public_users(self):
         self.logout()

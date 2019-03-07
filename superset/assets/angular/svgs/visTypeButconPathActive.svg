@@ -1,0 +1,11 @@
+<svg id="c5caea9d-e76d-4a49-88bf-2a23d5654104" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="32" height="20" viewBox="0 0 32 20">
+  <title>visTypeButconPathActive</title>
+  <rect width="32" height="20" fill="#e1e6e4" fill-opacity="0"/>
+  <g>
+    <rect x="8.25" y="9.5" width="8" height="1" fill="#25373e"/>
+    <circle cx="16" cy="10" r="1.5" fill="#25373e"/>
+    <circle cx="8.75" cy="10" r="1.5" fill="#25373e"/>
+    <rect x="15.75" y="9.5" width="7.5" height="1" fill="#25373e"/>
+    <circle cx="23.25" cy="10" r="1.5" fill="#25373e"/>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<svg id="e1514e6d-c158-4957-9697-bc550a681183" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+  <title>button_new</title>
+  <g>
+    <circle cx="18" cy="18" r="18" fill="#25373e"/>
+    <g>
+      <path d="M27.481,19.5H8.52a1.5,1.5,0,0,1,0-3H27.481a1.5,1.5,0,0,1,0,3Z" fill="#fff"/>
+      <path d="M18,28.981a1.5,1.5,0,0,1-1.5-1.5V8.519a1.5,1.5,0,0,1,3,0V27.481A1.5,1.5,0,0,1,18,28.981Z" fill="#fff"/>
+    </g>
+  </g>
+</svg>

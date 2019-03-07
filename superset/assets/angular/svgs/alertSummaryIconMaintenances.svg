@@ -1,0 +1,9 @@
+<svg id="edd1c56e-e285-4267-8864-5bee3d0d4aa5" data-name="f7953719-63b7-48e8-ac7b-dcfec97236fc" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+  <title>alertSummaryIconMaintenances</title>
+  <g id="7857cb8f-a0db-4c54-9bfc-a7bc86598923" data-name="wrench">
+    <g id="f43ee173-be86-4803-8e78-a577354fb1b7" data-name="ticket">
+      <circle cx="9" cy="9" r="9" fill="#758b98"/>
+    </g>
+    <path d="M13.553,11.564l-3.82-3.82A3.09,3.09,0,0,0,5.838,3.85L7.066,5.077l.219.219.7.7a.281.281,0,0,1,.073.272L7.721,7.522a.281.281,0,0,1-.2.2l-1.255.336A.281.281,0,0,1,6,7.985l-.7-.7-.219-.219L3.85,5.839A3.09,3.09,0,0,0,7.743,9.733l3.82,3.82a.844.844,0,0,0,1.193,0l.8-.8A.844.844,0,0,0,13.553,11.564Z" transform="translate(0.001)" fill="#fff"/>
+  </g>
+</svg>

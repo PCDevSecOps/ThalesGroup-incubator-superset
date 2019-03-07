@@ -1,0 +1,24 @@
+<svg id="9e4aa452-cf1e-4bb6-97b8-2b6799f6428f" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19">
+  <title>alertCalendarBarIconMini</title>
+  <g>
+    <circle cx="9.5" cy="9.5" r="9.5" fill="#4ea3e2" opacity="0"/>
+    <g>
+      <rect x="5.146" y="4.75" width="8.708" height="2.375" fill="#fff" opacity="0.5"/>
+      <g>
+        <rect x="5.146" y="12.667" width="2.375" height="1.583" fill="#fff"/>
+        <rect x="8.313" y="12.667" width="2.375" height="1.583" fill="#fff"/>
+        <rect x="11.479" y="12.667" width="2.375" height="1.583" fill="#fff" opacity="0.5"/>
+      </g>
+      <g>
+        <rect x="5.146" y="10.292" width="2.375" height="1.583" fill="#fff"/>
+        <rect x="8.313" y="10.292" width="2.375" height="1.583" fill="#fff"/>
+        <rect x="11.479" y="10.292" width="2.375" height="1.583" fill="#fff"/>
+      </g>
+      <g>
+        <rect x="5.146" y="7.917" width="2.375" height="1.583" fill="#fff"/>
+        <rect x="8.313" y="7.917" width="2.375" height="1.583" fill="#fff"/>
+        <rect x="11.479" y="7.917" width="2.375" height="1.583" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

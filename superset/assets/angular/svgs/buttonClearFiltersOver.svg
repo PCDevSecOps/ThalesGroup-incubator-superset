@@ -1,0 +1,10 @@
+<svg id="b8755c1d-fe21-4e25-8e03-63a79b31f13b" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+  <title>button_clear_filters</title>
+  <g>
+    <circle cx="7" cy="7" r="7" fill="#25373e"/>
+    <g>
+      <rect x="6.5" y="2.05" width="1" height="9.899" transform="translate(-2.9 7) rotate(-44.998)" fill="#00e0b8"/>
+      <rect x="2.05" y="6.5" width="9.899" height="1" transform="translate(-2.9 7) rotate(-45)" fill="#00e0b8"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20.01" height="20" viewBox="0 0 20.01 20">
+  <title>popupIconOpensNewWindow</title>
+  <g>
+    <rect width="2.857" height="20" fill="#fff"/>
+    <rect y="17.143" width="20" height="2.857" fill="#fff"/>
+    <rect x="17.153" y="11.429" width="2.857" height="8.571" fill="#fff"/>
+    <polyline points="19.296 1.473 5.947 14.823 4.918 13.795 18.267 0.445 19.296 1.473" fill="#fff"/>
+    <rect x="18.581" width="1.429" height="7.143" fill="#fff"/>
+    <rect width="8.571" height="2.857" fill="#fff"/>
+    <rect x="12.857" width="7.143" height="1.429" fill="#fff"/>
+  </g>
+</svg>

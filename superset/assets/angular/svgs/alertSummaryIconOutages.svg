@@ -1,0 +1,10 @@
+<svg id="f7953719-63b7-48e8-ac7b-dcfec97236fc" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+  <title>alertSummaryIconOutages</title>
+  <g id="2b14d32b-0e21-4c3c-adee-ff2eeba8e002" data-name="broken-bar">
+    <circle cx="9" cy="9" r="9" fill="#758b98"/>
+    <g>
+      <path d="M6.4,9.762l2.25-2.25L7.705,5.625H1.893a7.8,7.8,0,0,0,0,6.75H7.705Z" fill="#fff"/>
+      <path d="M16.107,5.625H10.689l1.306,2.612-2.25,2.25.944,1.888h5.418a7.8,7.8,0,0,0,0-6.75Z" fill="#fff"/>
+    </g>
+  </g>
+</svg>

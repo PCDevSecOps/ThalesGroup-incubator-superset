@@ -1,0 +1,10 @@
+<svg id="841d600b-8702-42c0-8ffe-a2e6417185d7" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <title>historyIconTicket</title>
+  <g id="106b3545-235a-46b9-8412-f53ae5fe3581" data-name="ticket">
+    <circle cx="12" cy="12" r="12" fill="#25373e"/>
+    <g>
+      <path d="M9.834,14.785V18h1.482a1,1,0,0,1,1.977,0h1.482V14.785Z" fill="#fff"/>
+      <path d="M13.293,6a1,1,0,0,1-1.977,0H9.834v7.757h4.941V6Z" fill="#fff"/>
+    </g>
+  </g>
+</svg>

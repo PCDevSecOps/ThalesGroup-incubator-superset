@@ -1,0 +1,23 @@
+<svg id="fd488a71-4911-47eb-9eb5-2ac331c194ed" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <title>alertStatusIconProcessing</title>
+  <g>
+    <circle cx="8" cy="8" r="8" fill="#758b98"/>
+    <g>
+      <g>
+        <path d="M8.952,4.877,8.487,3.015Q8.246,2.992,8,2.991t-.487.024L7.048,4.877Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M7.048,11.123l.465,1.862q.24.024.487.024t.487-.024l.466-1.862Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M11.264,7.94l1.627-1.018a4.933,4.933,0,0,0-.3-.926l-1.915.133Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M4.736,8.06,3.108,9.078a4.933,4.933,0,0,0,.3.925L5.324,9.87Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M6.935,4.913,5.463,3.681a5.051,5.051,0,0,0-.787.573l.718,1.78Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M9.065,11.086l1.471,1.233a5.021,5.021,0,0,0,.787-.573l-.718-1.779Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M10.606,6.033l.717-1.78a5.025,5.025,0,0,0-.787-.573L9.065,4.913Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M5.394,9.967l-.718,1.779a5.025,5.025,0,0,0,.787.573l1.471-1.233Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M5.324,6.129,3.409,6a4.939,4.939,0,0,0-.3.926L4.736,7.94Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M10.676,9.87,12.591,10a4.933,4.933,0,0,0,.3-.925L11.264,8.059Z" transform="translate(0 0)" fill="#fff"/>
+        <path d="M8,4.382A3.618,3.618,0,1,0,11.618,8,3.618,3.618,0,0,0,8,4.382Zm0,5.828A2.209,2.209,0,1,1,10.209,8,2.209,2.209,0,0,1,8,10.209Z" transform="translate(0 0)" fill="#fff"/>
+      </g>
+      <circle cx="8" cy="8" r="0.857" fill="#fff"/>
+      <rect x="3.108" y="2.991" width="4.892" height="10.017" fill="#758b98" opacity="0.5"/>
+    </g>
+  </g>
+</svg>

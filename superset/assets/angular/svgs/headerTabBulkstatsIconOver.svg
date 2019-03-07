@@ -1,0 +1,18 @@
+<svg id="b55c619b-fff0-486f-aa63-653f508ce76d" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <title>headerTabBulkstatsIconOver</title>
+  <path d="M12,24A12,12,0,0,1,0,12,12,12,0,0,1,20.486,3.515,12,12,0,0,1,12,24ZM12,1.411A10.589,10.589,0,0,0,4.511,19.486,10.588,10.588,0,1,0,19.486,4.513,10.514,10.514,0,0,0,12,1.411Z" fill="#a5f2e4"/>
+  <g id="941b41f9-c155-47e3-999c-827b51fdf42b" data-name="feedback">
+    <g>
+      <rect x="5.625" y="5.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="10.125" y="5.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="14.625" y="5.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="5.625" y="8.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="10.125" y="8.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="14.625" y="8.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="5.625" y="11.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="10.125" y="11.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <rect x="14.625" y="11.625" width="3.75" height="2.25" fill="#a5f2e4"/>
+      <path d="M4.875,14.625v3.75h14.25v-3.75Zm4.5,3H5.625v-2.25h3.75Zm4.5,0h-3.75v-2.25h3.75Zm4.5,0h-3.75v-2.25h3.75Z" fill="#a5f2e4"/>
+    </g>
+  </g>
+</svg>

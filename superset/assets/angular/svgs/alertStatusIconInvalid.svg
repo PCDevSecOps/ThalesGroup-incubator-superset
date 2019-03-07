@@ -1,0 +1,8 @@
+<svg id="b09afc3e-0c36-473e-9f27-bc3aa1965a25" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <title>alertStatusIconInvalid</title>
+  <g>
+    <circle cx="8" cy="8" r="8" fill="#758b98"/>
+    <path d="M8,3.5A4.5,4.5,0,1,1,3.5,8,4.505,4.505,0,0,1,8,3.5m0-2A6.5,6.5,0,1,0,14.5,8,6.5,6.5,0,0,0,8,1.5Z" fill="#fff"/>
+    <rect x="7" y="2.961" width="2" height="10.078" transform="translate(-3.314 8) rotate(-45)" fill="#fff"/>
+  </g>
+</svg>

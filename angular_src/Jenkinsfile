@@ -1,0 +1,273 @@
+#!/usr/bin/env groovy
+
+/*
+This is a Jenkinsfile with stages for continuous integration and continuous
+deployment of a dockerized application.
+This pipeline expects following branch names in GitHub repository
+that has to be followed:
+master
+feature/JIRA-ID-Description
+fix/JIRA-ID-Description
+release/X.Y.Z
+This pipeline also implements stages for pull requests testing
+hence it is strongly recommended to follow pull request practices.
+Which is: Nothing can be merged into master or release branch without
+creating a pull request.
+Pipeline follows following Artifact versioning strategy which in
+this case is a docker tag promotion:
+If Branch Name is feature/JIRA-ID-Description or fix/JIRA-ID-Description
+  then, dockerTag = JIRA-ID (From branch name, ephemeral Artifact)
+If Branch Name is PR-ID
+  then, dockerTag = PR-ID (From PR name, ephemeral Artifact)
+If Branch Name is master or release,
+  then, dockerTag = <module vesion>-<currentBuild number>-dev
+After dev test, dev tag prmotes to qa, such as:
+    dockerTag = <module vesion>-<currentBuild number>-qa
+After QA test, qa tag promotes to rc, such as:
+    dockerTag = <module vesion>-<currentBuild number>-rc
+After Acceptance test, rc tag prmotes to prod -
+    dockerTag = <module vesion>-<currentBuild number>-prod
+* Ephemeral artifacts created with feature or fix Branches
+ and with pull should get deleted after closure of the
+ branch/PR.
+* Note that docker tags promotion on master or release branches
+does not create separate artifacts but a different tag to
+the same docker image which should be kept until the image is
+in use.
+*/
+
+pipeline {
+  agent any
+  // using nodejs v8.9.4 configured at jenkins with NodeJS8 name
+  tools {nodejs "NodeJS8"}
+	environment {
+    // Define global environment variables in this section
+    project = 'ui-kit-starter-app'
+    buildNum = currentBuild.getNumber()
+    buildType = BRANCH_NAME.split('/').first()
+    branchVersion = BRANCH_NAME.split('/').last()
+    buildVersion = '1.0.0'
+  }
+  options {
+     timeout(time: 30, unit: 'MINUTES')
+  }
+  stages {
+
+    stage("Pre build") {
+      steps {
+        echo "Running Commmands to pre build"
+        sh "node -v;npm -v;npm install"
+      }
+    }
+    stage("Unit test") {
+      steps {
+        echo "Running Commmands to execute unit test"
+        sh "npm run test"
+      }
+    }
+    stage("Code coverage") {
+      steps {
+        echo "Code coverage has been collected in unittest stage"
+      }
+    }
+    stage("Code Quality") {
+      steps {
+        echo "Running Commmands to execute code quality test"
+         sh "npm run lint"
+      }
+    }
+    stage("Static code analysis") {
+      steps {
+        echo "Run Commmands to execute static code analysis test : skip"
+      }
+    }
+    stage("Build") {
+      steps {
+        echo "Running Commmands to trigger build"
+        sh "npm run build:prod --${env.project}:version=${env.buildVersion}-${buildNum}"
+      }
+    }
+
+    stage("Clean Previous Docker Images") {
+        steps {
+            echo "Removing previous docker images..."
+            sh "make clean"
+        }
+    }
+
+    stage('Create Docker Image') {
+      steps {
+        echo "Creating docker build..."
+        sh "make build"
+      }
+    }
+
+    stage("Compute Docker Tag") {
+      steps {
+        script {
+          if (buildType in ['feature','fix', 'feat']) {
+            // docker tag for a feature or fix branch
+            env.dockerTag = ( env.BRANCH_NAME.split('/')[1] =~ /.+-\d+/ )[0]
+          } else if (buildType ==~ /PR-.*/ ){
+            // docker tag for a pull request
+            env.dockerTag = buildType
+          } else if (buildType in ['master']) {
+            // docker tag for a master branch
+            env.dockerTagVersion = "${env.buildVersion}-${env.buildNum}"
+            env.dockerTagStage = "dev"
+            env.dockerTag = "${env.dockerTagVersion}-${env.dockerTagStage}"
+          } else if ( buildType in ['release'] ){
+            // docker tag for a release branch
+            env.dockerTagVersion = "${env.branchVersion}-${env.buildNum}"
+            env.dockerTagStage = "dev"
+            env.dockerTag = "${env.dockerTagVersion}-${env.dockerTagStage}"
+          }
+        }
+      }
+    }
+
+    stage('Tagging Docker Image') {
+      steps {
+        echo "Tagging docker image..."
+        sh "make tag DOCKER_IMAGE_TAG=${env.dockerTag}"
+      }
+    }
+
+    stage("Push docker images to artifactory") {
+      steps {
+        echo "Pushing docker image to artifactory..."
+        sh "make push DOCKER_IMAGE_TAG=${env.dockerTag}"
+      }
+    }
+
+    stage("Deploy on feature/fix/PR ephemeral test environments") {
+      when {
+        expression {
+          env.buildType ==~ /(feature|PR-.*|fix)/
+        }
+      }
+      steps {
+        // Stubs should be used to perform functional testing
+        echo "Deploy the Artifact on ephemeral environment"
+        echo "Trigger test run to verify code changes"
+      }
+    }
+
+    stage("Deploy and test on the dev environment") {
+      when {
+        expression {
+          // Run only for buildTypes master or Release
+          env.buildType in ['master','release']
+        }
+      }
+      steps {
+        // supporting components have fixed versions
+        echo "Deploy the Artifact on dev setup"
+        echo "Trigger integration test run with fixed versions"
+      }
+    }
+
+    stage("Promote Artifact to QA") {
+      when {
+        expression {
+          // Run only for buildTypes master or Release
+          env.buildType in ['master','release']
+        }
+      }
+      environment {
+        dockerTagStage = "qa"
+        dockerTag = "${env.dockerTagVersion}-${dockerTagStage}"
+      }
+      steps {
+        echo "Promote Artifact name to module-A:${dockerTag} in artifactory"
+      }
+    }
+
+    stage("Deploy and test on the QA environment") {
+      when {
+        expression {
+          // Run only for buildTypes master or Release
+          env.buildType in ['master','release']
+        }
+      }
+      steps {
+        echo "Deploy the Artifact on QA setup"
+        echo "Trigger integration test run with latest versions"
+      }
+    }
+
+    stage("Promote Artifact to RC") {
+      when {
+        expression {
+          // Run only for buildTypes master or Release
+          env.buildType in ['master','release']
+        }
+      }
+      environment {
+
+        dockerTagStage = "rc"
+        dockerTag = "${env.dockerTagVersion}-${dockerTagStage}"
+      }
+      steps {
+        // supporting components have fixed versions
+        echo "Promote Artifact name to module-A:${dockerTag}"
+      }
+    }
+
+    stage("Deploy and test on the Pre-Prod environment") {
+      when {
+        expression {
+          // Run only for buildTypes master or Release
+          env.buildType in ['master','release']
+        }
+      }
+      steps {
+        // supporting components have fixed versions
+        echo "Deploy the Artifact on staging equivalent setup"
+        echo "Trigger integration test run with latest stable versions"
+      }
+    }
+
+    stage("Promote Artifact to PROD") {
+      when {
+        expression {
+          // Run only for buildTypes master or Release
+          env.buildType in ['master','release']
+        }
+      }
+      environment {
+        dockerTagStage = "prod"
+        dockerTag = "${env.dockerTagVersion}-${dockerTagStage}"
+      }
+      steps {
+        // supporting components have fixed versions
+        echo "Promote Artifact name to module-A:${dockerTag}"
+      }
+    }
+  }
+  post {
+    always {
+      step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/cobertura-coverage.xml'])
+      slackSend channel: 'jenkins-ui-alerts', message: "Build Finished: ${env.JOB_NAME} - ${env.BUILD_NUMBER}: ${currentBuild.currentResult} Build-URL: ${env.BUILD_URL}"
+      publishHTML target: [
+          allowMissing: false,
+          alwaysLinkToLastBuild: false,
+          keepAll: false,
+          reportDir: 'coverage/html/',
+          reportFiles: 'index.html',
+          reportName: 'UI Kit Starter App Report'
+        ]
+        script {
+            def mailRecipients = 'KIWIK@guavus.com,Damien.Dube@guavus.com,Natalie.Conklin@guavus.com'
+            def jobName = currentBuild.fullDisplayName
+            emailext body: '''${JELLY_SCRIPT, template="ui-kit"}''',
+            mimeType: 'text/html',
+            attachmentsPattern: '*.png',
+            subject: "[Jenkins] ${jobName}",
+            to: "${mailRecipients}",
+            replyTo: "${mailRecipients}"
+        }
+    }
+  }
+
+}

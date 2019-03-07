@@ -810,14 +810,14 @@ class R(BaseSupersetView):
 
 appbuilder.add_view_no_menu(R)
 
-class Reactcode(BaseSupersetView):
-    @expose('/')
-    def index(self):
+class Custom(BaseSupersetView):
+    @expose('/<url_id>')
+    def index(self,url_id):
         # return redirect("/reactcode/index.html")
-        return self.render_template("custom/reactcode/index.html")
+        return self.render_template('custom/'+ url_id+'/index.html')
         # return self.render_template("custom/reactcode/index.html")
 
-appbuilder.add_view_no_menu(Reactcode)
+appbuilder.add_view_no_menu(Custom)
 
 class Superset(BaseSupersetView):
     """The base views for Superset!"""
@@ -2160,7 +2160,7 @@ class Superset(BaseSupersetView):
         #     return self.render_template(
         #     'custom/index.html'
         # )
-            return redirect('reactcode/')
+            return redirect("custom/"+custom_url)
 
         datasources = set()
         for slc in dash.slices:

@@ -2157,10 +2157,10 @@ class Superset(BaseSupersetView):
         json_metadata = json.loads(dash.json_metadata)
         custom_url = json_metadata.get('custom_url')
         if custom_url and custom_url != '':
-        #     return self.render_template(
-        #     'custom/index.html'
-        # )
-            return redirect("custom/"+custom_url)
+            return self.render_template(
+            'custom/'+ custom_url+'/index.html'
+        )
+            # return redirect("custom/"+custom_url)
 
         datasources = set()
         for slc in dash.slices:

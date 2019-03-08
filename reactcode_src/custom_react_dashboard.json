@@ -1,0 +1,12 @@
+{
+    "dashboards": [
+        {
+            "__Dashboard__": {
+                "position_json": "{}",
+                "json_metadata": "{ \"custom_url\": \"reactcode\"}",
+                "dashboard_title": "Custom React dashboard"
+            }
+        }
+    ],
+    "datasources": []
+}

@@ -72,6 +72,8 @@ import DeckPolygon from './DeckPolygon';
 import DeckScatter from './DeckScatter';
 import DeckScreengrid from './DeckScreengrid';
 import LeafletMap from './LeafletMap';
+import AgGridComponent from './AgGridComponent';
+
 
 export const controlPanelConfigs = {
   area: Area,
@@ -122,7 +124,8 @@ export const controlPanelConfigs = {
   deck_polygon: DeckPolygon,
   deck_scatter: DeckScatter,
   deck_screengrid: DeckScreengrid,
-  leaflet_map: LeafletMap
+  leaflet_map: LeafletMap,
+  ag_grid: AgGridComponent
 };
 
 export default controlPanelConfigs;

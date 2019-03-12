@@ -1777,6 +1777,12 @@ class LeafletViz(BaseViz):
             'data': df.to_dict('records')
         }
 
+class AgGridComponentViz(TableViz):
+
+    """A basic html table that is sortable and searchable"""
+
+    viz_type = 'ag_grid'
+    verbose_name = _('AgGrid View')
 
 class CountryMapViz(BaseViz):
 

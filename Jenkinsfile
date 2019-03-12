@@ -41,8 +41,8 @@ pipeline {
 
         stage("Unit test") {
           steps {
-            echo "Run Commmands to execute unit test"
-            sh "./scripts/test_rpm.sh ${env.testWithDatabase}"
+            echo "Starting unit test execution."
+            sh "./scripts/execute_unittest.sh ${env.testWithDatabase}"
           }
         }
         stage("Code coverage") {

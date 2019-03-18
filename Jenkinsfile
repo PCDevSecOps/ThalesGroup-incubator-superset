@@ -17,7 +17,7 @@ pipeline {
     UNIT_RESULT = 'target/surefire-reports/*.xml'
     COBERTURA_REPORT = 'coverage.xml'
     ALLURE_REPORT = 'allure-report/'
-    HTML_REPORT = './assets/output/coverage/jest/lcov-report/index.html'
+    HTML_REPORT = './superset/assets/output/coverage/jest/lcov-report/index.html'
   }
   stages {
 

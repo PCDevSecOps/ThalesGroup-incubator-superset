@@ -37,30 +37,15 @@ pipeline {
         echo "Updated Superset image tag"
       }
     }
-    stage("Build and test") {
-      parallel {
-
-        stage("Unit test") {
-          steps {
-            echo "Starting unit test execution."
-            sh "./scripts/execute_unittest.sh ${env.testWithDatabase}"
-          }
-        }
-        stage("Code coverage") {
-          steps {
-            echo "Run Commmands to execute code coverage test"
-          }
-        }
-        stage("Static code analysis or Checkstyle") {
-          steps {
-            echo "Run Commmands to execute static code analysis test"
-          }
-        }
+    stage("Unit test and Code Coverage") {
+      steps {
+        echo "Starting unit test execution."
+        sh "./scripts/execute_unittest.sh ${env.testWithDatabase}"
       }
     }
-    stage("Build or Compile") {
+    stage("Static code analysis or Checkstyle") {
       steps {
-        echo "Run Commmands to trigger build"
+        echo "Run Commmands to execute static code analysis test"
       }
     }
     stage('Code Quality with SonarQube') {
@@ -72,6 +57,12 @@ pipeline {
             sh 'sonar-scanner -Dsonar.projectKey=incubator-superset -Dsonar.sources=.'
           }
         }
+      }
+    }
+    stage("End to End Integration Test with Cypress") {
+      steps {
+        echo "Starting integration tests execution."
+        sh "./scripts/execute_cypressTest.sh"
       }
     }
     stage('Create RPMs') {

@@ -20,7 +20,6 @@ pipeline {
     HTML_REPORT = 'index.html'
   }
   stages {
-
     stage("Define Release version"){
       steps {
         script {
@@ -28,7 +27,6 @@ pipeline {
         }
       }
     }
-
     stage("Update Superset Image Tag") {
       steps {
         // Updating Superset image tag in superset.yml
@@ -62,7 +60,10 @@ pipeline {
     stage("End to End Integration Test with Cypress") {
       steps {
         echo "Starting integration tests execution."
-        sh "./scripts/execute_cypressTest.sh"
+        //sh "./scripts/execute_cypressTest.sh"
+        tox -e cypress-dashboard
+        tox -e cypress-explore
+        tox -e cypress-sqllab
       }
     }
     stage('Create RPMs') {
@@ -71,8 +72,6 @@ pipeline {
         sh  "./build_rpm.sh ${VERSION} ${RELEASE}"
       }
     }
-
-
     stage("Push rpm images in artifactory"){
       steps{
         script{
@@ -80,7 +79,6 @@ pipeline {
         }
       }
     }
-
     stage("Deploy the particular plugin") {
       when {
         expression {
@@ -92,21 +90,18 @@ pipeline {
         echo "Deploy the Artifact on ephemeral environment"
       }
     }
-
     stage('Create Docker Image') {
       steps {
         echo "Creating docker build..."
         sh "make docker_build"
       }
     }
-
     stage('Tagging Docker Image') {
       steps {
         echo "Tagging docker image..."
         sh "make docker_tag DOCKER_IMAGE_TAG=${env.dockerTag}"
       }
     }
-
     stage("Push docker images to artifactory"){
       steps{
         script{
@@ -114,9 +109,7 @@ pipeline {
         }
       }
     }
-
   }
-
   post {
     always {
       reports_alerts(env.CHECKSTYLE_FILE, env.UNIT_RESULT, env.COBERTURA_REPORT, env.ALLURE_REPORT, env.HTML_REPORT)

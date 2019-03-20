@@ -60,10 +60,7 @@ pipeline {
     stage("End to End Integration Test with Cypress") {
       steps {
         echo "Starting integration tests execution."
-        //sh "./scripts/execute_cypressTest.sh"
-        tox -e cypress-dashboard
-        tox -e cypress-explore
-        tox -e cypress-sqllab
+        sh "./scripts/execute_cypressTest.sh"
       }
     }
     stage('Create RPMs') {

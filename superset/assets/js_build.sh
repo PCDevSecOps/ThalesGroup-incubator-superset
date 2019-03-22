@@ -21,6 +21,5 @@ npm --version
 node --version
 time npm ci
 #time npm run lint
-echo    "npm run test"
 time npm run test
 time npm run build

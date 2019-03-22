@@ -66,7 +66,7 @@ pipeline {
     stage("Code Coverage of JavaScript files") {
       steps {
         echo "Run Commmands to get code coverage of JavaScript Files"
-             "tox -e javascript"
+             sh "tox -e javascript"
       }
     }
     stage('Code Quality with SonarQube') {

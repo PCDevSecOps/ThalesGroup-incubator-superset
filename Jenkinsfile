@@ -65,7 +65,7 @@ pipeline {
     }
     stage("Code Coverage of JavaScript files") {
       steps {
-        echo "Run Commmands to get code coverage of JavaScript Files"
+        echo "Running Commmands to get code coverage of JavaScript Files"
              sh "tox -e javascript"
       }
     }

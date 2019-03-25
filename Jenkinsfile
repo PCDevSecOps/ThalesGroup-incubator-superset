@@ -9,6 +9,8 @@ pipeline {
     WORKSPACE = pwd()
     supersetInventoryFilePath = 'superset-installer/etc/reflex-provisioner/inventory/templates/group_vars/global/all/raf/superset.yml'
     jenkinsInventoryFilePath = '${WORKSPACE}/${supersetInventoryFilePath}'
+    cypressBuildPath = 'superset/assets'
+    jenkinsCypresspath = '${WORKSPACE}/${cypressBuildPath}'
     testWithDatabase = 'py36-postgres'
     ARTIFACT_SRC1 = '.'
     ARTIFACT_DEST1 = 'ggn-dev-rpms/raf'

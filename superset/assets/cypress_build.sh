@@ -17,9 +17,9 @@
 #
 set -e
 echo "[Starting Cypress Build Steps]"
-echo "$(dirname "$0")"
+# echo "$(dirname "$0")"
 
-cd "$(dirname "$0")"
+# cd "$(dirname "$0")"
 
 #run all the python steps in a background process
 time superset db upgrade

@@ -16,6 +16,9 @@
 # limitations under the License.
 #
 set -e
+echo "[Starting Cypress Build Steps]"
+echo "$(dirname "$0")"
+echo "$(dirname)"
 
 cd "$(dirname "$0")"
 

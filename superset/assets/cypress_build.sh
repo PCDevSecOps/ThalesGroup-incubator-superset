@@ -23,9 +23,9 @@ pwd
 
 #run all the python steps in a background process
 echo "[Cypress Build Step 2]"
-superset db upgrade
+time superset db upgrade
 echo "[Cypress Build Step 3]"
-superset load_test_users
+time superset load_test_users
 echo "[Cypress Build Step 4]"
 time superset load_examples --load-test-data
 time superset init

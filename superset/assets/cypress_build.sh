@@ -17,11 +17,11 @@
 #
 set -e
 echo "[Starting Cypress Build Steps]"
-# echo "$(dirname "$0")"
 
+SCRIPTDIR='cd "$(dirname "$0")" && pwd'
 # cd "$(dirname "$0")"
-pwd
 
+echo "[Cypress Build Step 2]"
 #run all the python steps in a background process
 time superset db upgrade
 time superset load_test_users

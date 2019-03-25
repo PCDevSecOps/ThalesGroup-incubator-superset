@@ -9,8 +9,6 @@ pipeline {
     WORKSPACE = pwd()
     supersetInventoryFilePath = 'superset-installer/etc/reflex-provisioner/inventory/templates/group_vars/global/all/raf/superset.yml'
     jenkinsInventoryFilePath = '${WORKSPACE}/${supersetInventoryFilePath}'
-    cypressBuildPath = 'superset/assets'
-    jenkinsCypresspath = '${WORKSPACE}/${cypressBuildPath}'
     testWithDatabase = 'py36-postgres'
     ARTIFACT_SRC1 = '.'
     ARTIFACT_DEST1 = 'ggn-dev-rpms/raf'
@@ -62,7 +60,7 @@ pipeline {
     stage("End to End Integration Test with Cypress") {
       steps {
         echo "Starting integration tests execution."
-        sh "./scripts/execute_cypressTest.sh ${env.jenkinsCypresspath}"
+        sh "./scripts/execute_cypressTest.sh"
       }
     }
     stage('Create RPMs') {

@@ -20,6 +20,7 @@ echo "[Starting Cypress Build Steps]"
 # echo "$(dirname "$0")"
 
 # cd "$(dirname "$0")"
+pwd
 
 #run all the python steps in a background process
 time superset db upgrade

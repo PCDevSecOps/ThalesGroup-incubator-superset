@@ -23,8 +23,10 @@ pwd
 
 echo "[Cypress Build Step 2]"
 #run all the python steps in a background process
-time superset db upgrade
-time superset load_test_users
+echo "[Cypress Build Step 3]"
+superset db upgrade
+superset load_test_users
+echo "[Cypress Build Step 4]"
 time superset load_examples --load-test-data
 time superset init
 echo "[completed python build steps]"

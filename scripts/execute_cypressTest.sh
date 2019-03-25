@@ -1,6 +1,7 @@
 set -e
 
 echo -e "# # # # # # # STARTING : Integration Test Exceution # # # # # # #"
+ls -a
 npm install cypress
 tox -e cypress-dashboard
 # tox -e cypress-explore

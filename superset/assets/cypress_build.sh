@@ -18,8 +18,8 @@
 set -e
 echo "[Starting Cypress Build Steps]"
 
-SCRIPTDIR='cd "$(dirname "$0")" && pwd'
-# cd "$(dirname "$0")"
+cd "$(dirname "$0")"
+pwd
 
 echo "[Cypress Build Step 2]"
 #run all the python steps in a background process

@@ -16,17 +16,12 @@
 # limitations under the License.
 #
 set -e
-echo "[Starting Cypress Build Steps]"
-
 cd "$(dirname "$0")"
 pwd
 
 #run all the python steps in a background process
-echo "[Cypress Build Step 2]"
 time superset db upgrade
-echo "[Cypress Build Step 3]"
 time superset load_test_users
-echo "[Cypress Build Step 4]"
 time superset load_examples --load-test-data
 time superset init
 echo "[completed python build steps]"

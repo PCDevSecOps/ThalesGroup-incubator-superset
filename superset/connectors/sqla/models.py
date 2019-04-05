@@ -281,6 +281,8 @@ class SqlaTable(Model, BaseDatasource):
     sql = Column(Text)
     is_sqllab_view = Column(Boolean, default=False)
     template_params = Column(Text)
+    #add hive_partitions column to store partition info
+    hive_partitions = Column(Text)
 
     baselink = 'tablemodelview'
 
@@ -288,7 +290,7 @@ class SqlaTable(Model, BaseDatasource):
         'table_name', 'main_dttm_col', 'description', 'default_endpoint',
         'database_id', 'offset', 'cache_timeout', 'schema',
         'sql', 'params', 'template_params', 'filter_select_enabled',
-        'fetch_values_predicate',
+        'fetch_values_predicate','hive_partitions',
     )
     update_from_object_fields = [
         f for f in export_fields if f not in ('table_name', 'database_id')]

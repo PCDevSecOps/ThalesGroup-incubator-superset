@@ -17,9 +17,10 @@ pipeline {
     UNIT_RESULT = 'target/surefire-reports/*.xml'
     COBERTURA_REPORT = 'coverage.xml'
     ALLURE_REPORT = 'allure-report/'
-    HTML_REPORT = 'index.html'
+    HTML_REPORT = 'superset/assets/output/coverage/jest/lcov-report/'
   }
   stages {
+
     stage("Define Release version"){
       steps {
         script {
@@ -27,6 +28,7 @@ pipeline {
         }
       }
     }
+
     stage("Update Superset Image Tag") {
       steps {
         // Updating Superset image tag in superset.yml
@@ -35,32 +37,47 @@ pipeline {
         echo "Updated Superset image tag"
       }
     }
-    // stage("Unit test and Code Coverage") {
-    //   steps {
-    //     echo "Starting unit test execution."
-    //     sh "./scripts/execute_unittest.sh ${env.testWithDatabase}"
-    //   }
-    // }
-    // stage("Static code analysis or Checkstyle") {
-    //   steps {
-    //     echo "Run Commmands to execute static code analysis test"
-    //   }
-    // }
-    // stage('Code Quality with SonarQube') {
-    //    steps {
-    //     script {
-    //       def scannerHome = tool 'sonar';
-    //       withSonarQubeEnv('sonar') {
-    //         echo "sonar"
-    //         sh 'sonar-scanner -Dsonar.projectKey=incubator-superset -Dsonar.sources=.'
-    //       }
-    //     }
-    //   }
-    // }
-    stage("End to End Integration Test with Cypress") {
+    stage("Build and test") {
+      parallel {
+
+        stage("Unit test") {
+          steps {
+            echo "Starting unit test execution."
+            sh "./scripts/execute_unittest.sh ${env.testWithDatabase}"
+          }
+        }
+        stage("Code coverage") {
+          steps {
+            echo "Run Commmands to execute code coverage test"
+          }
+        }
+        stage("Static code analysis or Checkstyle") {
+          steps {
+            echo "Run Commmands to execute static code analysis test"
+          }
+        }
+      }
+    }
+    stage("Build or Compile") {
       steps {
-        echo "Starting integration tests execution."
-        sh "./scripts/execute_cypressTest.sh"
+        echo "Run Commmands to trigger build"
+      }
+    }
+    stage("Code Coverage of JavaScript files") {
+      steps {
+        echo "Running Commmands to get code coverage of JavaScript Files"
+             sh "tox -e javascript"
+      }
+    }
+    stage('Code Quality with SonarQube') {
+       steps {
+        script {
+          def scannerHome = tool 'sonar';
+          withSonarQubeEnv('sonar') {
+            echo "sonar"
+            sh 'sonar-scanner -Dsonar.projectKey=incubator-superset -Dsonar.sources=.'
+          }
+        }
       }
     }
     stage('Create RPMs') {
@@ -69,6 +86,8 @@ pipeline {
         sh  "./build_rpm.sh ${VERSION} ${RELEASE}"
       }
     }
+
+
     stage("Push rpm images in artifactory"){
       steps{
         script{
@@ -76,6 +95,7 @@ pipeline {
         }
       }
     }
+
     stage("Deploy the particular plugin") {
       when {
         expression {
@@ -87,18 +107,21 @@ pipeline {
         echo "Deploy the Artifact on ephemeral environment"
       }
     }
+
     stage('Create Docker Image') {
       steps {
         echo "Creating docker build..."
         sh "make docker_build"
       }
     }
+
     stage('Tagging Docker Image') {
       steps {
         echo "Tagging docker image..."
         sh "make docker_tag DOCKER_IMAGE_TAG=${env.dockerTag}"
       }
     }
+
     stage("Push docker images to artifactory"){
       steps{
         script{
@@ -106,7 +129,9 @@ pipeline {
         }
       }
     }
+
   }
+
   post {
     always {
       reports_alerts(env.CHECKSTYLE_FILE, env.UNIT_RESULT, env.COBERTURA_REPORT, env.ALLURE_REPORT, env.HTML_REPORT)

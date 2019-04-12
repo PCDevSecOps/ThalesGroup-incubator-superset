@@ -14,11 +14,11 @@ GRAN_VALUE_MAP = {
     'P1Y'  : 31556926
 }
 
-# return seconds from gran valaue map
+# return seconds from gran valaue map default is 86400
 def get_gran_value_in_seconds(value):
     if  value in GRAN_VALUE_MAP:
         return GRAN_VALUE_MAP[value]
-    return None
+    return 86400
 
 
 def get_partitioned_query(time_partitions):
@@ -40,6 +40,11 @@ def get_partitioned_whereclause(_st, _en, gran_seconds, time_partitions):
     time_seq = list()
     # consider here only till < condition because hive store data like that
     # ie 10-11 hr data will exist in 10th hr partition
+
+    # handle same st and ed selection case,single point selection
+    if _st == _en:
+        time_seq.append(_st.strftime(get_partitioned_query(time_partitions)))
+
     while _st < _en:
         time_seq.append(_st.strftime(get_partitioned_query(time_partitions)))
         _st = _st + timedelta(seconds=gran_seconds)

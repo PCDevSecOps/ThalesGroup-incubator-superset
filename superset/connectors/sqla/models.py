@@ -833,7 +833,7 @@ class SqlaTable(Model, BaseDatasource):
         """Apply HIVE_QUERY_GENERATOR """
         HIVE_QUERY_GENERATOR = config.get('HIVE_QUERY_GENERATOR')
         if HIVE_QUERY_GENERATOR:
-            sql = HIVE_QUERY_GENERATOR(sql,query_obj,self.database)
+            sql = HIVE_QUERY_GENERATOR(sql,query_obj,self.database,self.datasource_name)
             
         db_engine_spec = self.database.db_engine_spec
         try:

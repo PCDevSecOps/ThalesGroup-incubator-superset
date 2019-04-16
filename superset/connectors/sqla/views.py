@@ -239,8 +239,8 @@ class TableModelView(DatasourceModelView, DeleteMixin, YamlExportMixin):  # noqa
             'Note this defaults to the database timeout if undefined.'),
         'hive_partitions': _(
             'Define Hive Partitions as per schema .'
-            '{"time":{"year":"_hive_year_col","month":"_hive_month_col","day":"_hive_day_col",'
-            '"hour":"_hive_hour_col","minute":"_hive_minute_col"},} '
+            ' {"time":{"year":"_hive_year_col","month":"_hive_month_col","day":"_hive_day_col",'
+            '"hour":"_hive_hour_col","minute":"_hive_minute_col"}} '
             'It is TIME based partitions schema sample( here time is used as key ) and mapped hive '
             'column name with respective properties .' ),
            

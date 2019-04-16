@@ -80,7 +80,7 @@ def get_hive_partitions(database, datasource_name):
     return table.hive_partitions
 
 def default_hive_query_generator(sql, query_obj, database, datasource_name):
-
+    st_seconds = datetime.now()
     """ schema for time based partition in table
     {
       "time":{
@@ -109,13 +109,9 @@ def default_hive_query_generator(sql, query_obj, database, datasource_name):
                 granularity = query_obj['granularity']
                 granularity_in_partitions = (granularity in time_partitions)
                 if st and en and gran_seconds:
-                    dt = datetime.today()
-                    st_seconds = dt.timestamp()
                     where_clause = get_partitioned_whereclause(st, en, gran_seconds, time_partitions)
                     sql_updated = replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions)
-                    dt = datetime.today()
-                    ed_seconds = dt.timestamp()
-                    logging.info('[HIVE PARTITION QUERY] query formation time {0} seconds'.format(ed_seconds-st_seconds))
+                    logging.info('[PERFORMANCE CHECK] Hive Partition Query formation time {0} '.format(datetime.now() - st_seconds))
                     return sql_updated
-
+    logging.info('[PERFORMANCE CHECK] Hive Partition Query formation time {0} '.format(datetime.now() - st_seconds))
     return sql

@@ -1,3 +1,21 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# pylint: disable=C,R,W
+
 import json
 import re
 from datetime import timedelta
@@ -17,25 +35,46 @@ GRAN_VALUE_MAP = {
 }
 
 # return seconds from gran valaue map default is 86400
-def get_gran_value_in_seconds(value):
-    if  value in GRAN_VALUE_MAP:
+def get_gran_value_in_seconds(value,time_partitions):
+    partition_min_grain = get_partitions_min_grain(time_partitions)
+    if value in GRAN_VALUE_MAP and  GRAN_VALUE_MAP[value] >= partition_min_grain:
         return GRAN_VALUE_MAP[value]
-    return 86400
+    return partition_min_grain
 
-
-def get_partitioned_query(time_partitions):
-    query_str = "( "
+def get_partitions_min_grain(time_partitions):
+    partition_grains = list()
     if 'year' in time_partitions:
-        query_str += time_partitions['year']+" = %Y "
+        partition_grains.append(31556926)
     if 'month' in time_partitions:
-        query_str += "AND "+time_partitions['month']+" = %m "
+        partition_grains.append(2629743)
     if 'day' in time_partitions:
-        query_str += "AND "+time_partitions['day']+" = %d "
+        partition_grains.append(86400)
     if 'hour' in time_partitions:
-        query_str += "AND "+time_partitions['hour']+" = %H "
+        partition_grains.append(3600)
     if 'minute' in time_partitions:
-        query_str += "AND "+time_partitions['minute']+" = %M "
-    query_str += ")"
+        partition_grains.append(60)
+
+    partition_grains.sort()
+
+    return partition_grains[0]
+
+
+
+def get_partitioned_query_format(time_partitions):
+    partition_seq = list()
+    if 'year' in time_partitions:
+        partition_seq.append(time_partitions['year']+" = %Y ")
+    if 'month' in time_partitions:
+        partition_seq.append(time_partitions['month']+" = %m ")
+    if 'day' in time_partitions:
+        partition_seq.append(time_partitions['day']+" = %d ")
+    if 'hour' in time_partitions:
+        partition_seq.append(time_partitions['hour']+" = %H ")
+    if 'minute' in time_partitions:
+        partition_seq.append(time_partitions['minute']+" = %M ")
+   
+    partition_seq_str = "AND ".join(partition_seq)
+    query_str  = "( "+ partition_seq_str+ ")"
     return query_str
 
 def get_partitioned_whereclause(_st, _en, gran_seconds, time_partitions):
@@ -45,10 +84,10 @@ def get_partitioned_whereclause(_st, _en, gran_seconds, time_partitions):
 
     # handle same st and ed selection case,single point selection
     if _st == _en:
-        time_seq.append(_st.strftime(get_partitioned_query(time_partitions)))
+        time_seq.append(_st.strftime(get_partitioned_query_format(time_partitions)))
 
     while _st < _en:
-        time_seq.append(_st.strftime(get_partitioned_query(time_partitions)))
+        time_seq.append(_st.strftime(get_partitioned_query_format(time_partitions)))
         _st = _st + timedelta(seconds=gran_seconds)
 
     where_clause = " OR ".join(time_seq)
@@ -84,11 +123,11 @@ def default_hive_query_generator(sql, query_obj, database, datasource_name):
     """ schema for time based partition in table
     {
       "time":{
-       "year":"year",
-         "month":"month",
-        "day":"day",
-         "hour":"hour",
-        "minute":"minute"
+                "year":"year",
+                "month":"month",
+                "day":"day",
+                "hour":"hour",
+                "minute":"minute"
          }
     }
 
@@ -105,7 +144,7 @@ def default_hive_query_generator(sql, query_obj, database, datasource_name):
                 st = query_obj['from_dttm']
                 en = query_obj['to_dttm']
                 time_grain = query_obj['extras']['time_grain_sqla']
-                gran_seconds = get_gran_value_in_seconds(time_grain)
+                gran_seconds = get_gran_value_in_seconds(time_grain,time_partitions)
                 granularity = query_obj['granularity']
                 granularity_in_partitions = (granularity in time_partitions)
                 if st and en and gran_seconds:

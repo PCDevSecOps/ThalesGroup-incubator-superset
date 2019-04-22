@@ -1061,6 +1061,25 @@ class HiveEngineSpec(PrestoEngineSpec):
 
     engine = 'hive'
 
+    time_grain_functions = {
+        None: '{col}',
+        'PT1S': "second(CAST({col} AS TIMESTAMP))",
+        'PT1M': "minute(CAST({col} AS TIMESTAMP))",
+        'PT1H': "hour(CAST({col} AS TIMESTAMP))",
+        'P1D': "day( CAST({col} AS TIMESTAMP))",
+        'P1W': "weekofyear(CAST({col} AS TIMESTAMP))",
+        'P1M': "month(CAST({col} AS TIMESTAMP))",
+        'P0.25Y': "date_trunc('quarter', CAST({col} AS TIMESTAMP))",
+        'P1Y': "year CAST({col} AS TIMESTAMP))",
+        'P1W/1970-01-03T00:00:00Z':
+            "date_add('day', 5, weekofyear(date_add('day', 1, \
+            CAST({col} AS TIMESTAMP))))",
+        '1969-12-28T00:00:00Z/P1W':
+            "date_add('day', -1, weekofyear( \
+            date_add('day', 1, CAST({col} AS TIMESTAMP))))",
+    }
+
+
     # Scoping regex at class level to avoid recompiling
     # 17/02/07 19:36:38 INFO ql.Driver: Total jobs = 5
     jobs_stats_r = re.compile(
@@ -1367,7 +1386,7 @@ class HiveEngineSpec(PrestoEngineSpec):
                                 f' differs from {labels_expected}')
             else:
                 df.columns = labels_expected
-                
+
     @staticmethod
     def execute(cursor, query, async_=False):
         kwargs = {'async': async_}

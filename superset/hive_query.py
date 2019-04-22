@@ -54,9 +54,8 @@ def get_partitions_min_grain(time_partitions):
     if 'minute' in time_partitions:
         partition_grains.append(GRAIN_VALUE_MAP['PT1M'])
 
-    partition_grains.sort()
     if partition_grains:
-        return partition_grains[0]
+        return partition_grains[-1]
 
     return None
 

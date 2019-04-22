@@ -22,41 +22,43 @@ from datetime import timedelta
 import logging
 from datetime import datetime
 #gran valaue map,supported grain by hive db engine
-GRAN_VALUE_MAP = {
+GRAIN_VALUE_MAP = {
     'PT1S' : 1,
     'PT1M' : 60,
     'PT1H' : 3600,
     'P1D'  : 86400,
-    'P1W'  : 604800,
-    'P1M'  : 2629743,
-    'P3M'  : 7889229,
-    'P0.25Y': 7889229,
-    'P1Y'  : 31556926
+    'P1W'  : 604800,   # 7 days
+    'P1M'  : 2592000,  # 30 days
+    'P3M'  : 7776000,  # 3*30 days
+    'P0.25Y': 7776000, # 3*30 days
+    'P1Y'  : 31536000  # 365 days
 }
 
 # return seconds from gran valaue map default is 86400
 def get_gran_value_in_seconds(value,time_partitions):
     partition_min_grain = get_partitions_min_grain(time_partitions)
-    if value in GRAN_VALUE_MAP and  GRAN_VALUE_MAP[value] >= partition_min_grain:
-        return GRAN_VALUE_MAP[value]
+    if partition_min_grain and value in GRAIN_VALUE_MAP and  GRAIN_VALUE_MAP[value] >= partition_min_grain:
+        return GRAIN_VALUE_MAP[value]
     return partition_min_grain
 
 def get_partitions_min_grain(time_partitions):
     partition_grains = list()
     if 'year' in time_partitions:
-        partition_grains.append(31556926)
+        partition_grains.append(GRAIN_VALUE_MAP['P1Y'])
     if 'month' in time_partitions:
-        partition_grains.append(2629743)
+        partition_grains.append(GRAIN_VALUE_MAP['P1M'])
     if 'day' in time_partitions:
-        partition_grains.append(86400)
+        partition_grains.append(GRAIN_VALUE_MAP['P1D'])
     if 'hour' in time_partitions:
-        partition_grains.append(3600)
+        partition_grains.append(GRAIN_VALUE_MAP['PT1H'])
     if 'minute' in time_partitions:
-        partition_grains.append(60)
+        partition_grains.append(GRAIN_VALUE_MAP['PT1M'])
 
     partition_grains.sort()
+    if partition_grains:
+        return partition_grains[0]
 
-    return partition_grains[0]
+    return None
 
 
 

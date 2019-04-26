@@ -1063,20 +1063,16 @@ class HiveEngineSpec(PrestoEngineSpec):
 
     time_grain_functions = {
         None: '{col}',
-        'PT1S': "second(CAST({col} AS TIMESTAMP))",
-        'PT1M': "minute(CAST({col} AS TIMESTAMP))",
-        'PT1H': "hour(CAST({col} AS TIMESTAMP))",
-        'P1D': "day( CAST({col} AS TIMESTAMP))",
-        'P1W': "weekofyear(CAST({col} AS TIMESTAMP))",
-        'P1M': "month(CAST({col} AS TIMESTAMP))",
-        'P0.25Y': "date_trunc('quarter', CAST({col} AS TIMESTAMP))",
-        'P1Y': "year CAST({col} AS TIMESTAMP))",
-        'P1W/1970-01-03T00:00:00Z':
-            "date_add('day', 5, weekofyear(date_add('day', 1, \
-            CAST({col} AS TIMESTAMP))))",
+        'PT1S': "from_unixtime({col}, 'yyyy-MM-dd HH:mm:ss')",
+        'PT1M': "from_unixtime({col}, 'yyyy-MM-dd HH:mm')",
+        'PT1H': "from_unixtime({col}, 'yyyy-MM-dd HH')",
+        'P1D': "from_unixtime({col}, 'yyyy-MM-dd')",
+        'P1W': "date_sub(next_day(from_unixtime({col}, 'yyyy-MM-dd'), 'MON'), 7)",
+        'P1M': "from_unixtime({col}, 'yyyy-MM')",
+        'P0.25Y': "add_months(trunc(from_unixtime({col}), 'MM'), -(month(from_unixtime({col}))-1)%3)",
+        'P1Y': "from_unixtime({col}, 'yyyy')",
         '1969-12-28T00:00:00Z/P1W':
-            "date_add('day', -1, weekofyear( \
-            date_add('day', 1, CAST({col} AS TIMESTAMP))))",
+            "date_sub(next_day(from_unixtime({col}, 'yyyy-MM-dd'), 'SUN'), 7)",
     }
 
 

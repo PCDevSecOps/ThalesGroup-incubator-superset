@@ -41,8 +41,8 @@ public class ExploreChartPageTest extends TestBase{
 	@Test(priority=1)
 	public void exploreChartTitleTest() {
 		String title = exploreChart.verifyPageTitle();
-		//String actualTitle = "Explore - " + prop.getProperty("dataSource").split("\\.")[1];
-		String actualTitle = "Explore - " + prop.getProperty("dataSource");
+		String actualTitle = "Explore - " + prop.getProperty("dataSource").split("\\.")[1];
+		//String actualTitle = "Explore - " + prop.getProperty("dataSource");
 		Assert.assertEquals(title.trim(), actualTitle);
 	}
 	

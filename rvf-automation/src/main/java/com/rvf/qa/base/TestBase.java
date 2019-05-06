@@ -24,7 +24,7 @@ public class TestBase {
 	public TestBase() {
 		try {
 			prop = new Properties();
-			FileInputStream ip = new FileInputStream("/Users/harshitkumar/eclipse-workspace/uiautomation/src/main/java/com/rvf"
+			FileInputStream ip = new FileInputStream("src/main/java/com/rvf"
 			+"/qa/config/config.properties");
 			prop.load(ip);
 		}

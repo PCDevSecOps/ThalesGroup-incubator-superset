@@ -281,6 +281,8 @@ class SqlaTable(Model, BaseDatasource):
     sql = Column(Text)
     is_sqllab_view = Column(Boolean, default=False)
     template_params = Column(Text)
+    #add hive_partitions column to store partition info
+    hive_partitions = Column(Text)
 
     baselink = 'tablemodelview'
 
@@ -288,7 +290,7 @@ class SqlaTable(Model, BaseDatasource):
         'table_name', 'main_dttm_col', 'description', 'default_endpoint',
         'database_id', 'offset', 'cache_timeout', 'schema',
         'sql', 'params', 'template_params', 'filter_select_enabled',
-        'fetch_values_predicate',
+        'fetch_values_predicate','hive_partitions',
     )
     update_from_object_fields = [
         f for f in export_fields if f not in ('table_name', 'database_id')]
@@ -490,6 +492,12 @@ class SqlaTable(Model, BaseDatasource):
         if query_obj['is_prequery']:
             query_obj['prequeries'].append(sql)
         sql = self.mutate_query_from_config(sql)
+
+        """Apply HIVE_QUERY_GENERATOR """
+        HIVE_QUERY_GENERATOR = config.get('HIVE_QUERY_GENERATOR')
+        if HIVE_QUERY_GENERATOR:
+            sql = HIVE_QUERY_GENERATOR(sql,query_obj,self.database,self.datasource_name)
+
         return QueryStringExtended(labels_expected=sqlaq.labels_expected, sql=sql)
 
     def get_query_str(self, query_obj):
@@ -827,12 +835,7 @@ class SqlaTable(Model, BaseDatasource):
         status = utils.QueryStatus.SUCCESS
         error_message = None
         df = None
-        
-        """Apply HIVE_QUERY_GENERATOR """
-        HIVE_QUERY_GENERATOR = config.get('HIVE_QUERY_GENERATOR')
-        if HIVE_QUERY_GENERATOR:
-            sql = HIVE_QUERY_GENERATOR(sql,query_obj,self.database)
-            
+        logging.info('[PERFORMANCE CHECK] SQL Query formation time {0} '.format(datetime.now() - qry_start_dttm))
         db_engine_spec = self.database.db_engine_spec
         try:
             df = self.database.get_df(sql, self.schema)

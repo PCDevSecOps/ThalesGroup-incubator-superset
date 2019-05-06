@@ -43,7 +43,8 @@ export const linkedSlices = {
   label: t('Publish & Subscribe'),
   expanded: true,
   controlSetRows: [
-    ['publish_columns', 'linked_slice']
+    ['publish_columns'],
+    ['linked_slice'],
   ],
 };
 
@@ -61,6 +62,7 @@ export const sqlaTimeSeries = {
   controlSetRows: [
     ['granularity_sqla', 'time_grain_sqla'],
     ['time_range'],
+    ['query_with_partitions'],
   ],
 };
 

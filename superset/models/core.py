@@ -24,7 +24,7 @@ import json
 import logging
 import textwrap
 
-from flask import escape, g, Markup, request
+from flask import escape, g, Markup, request, flash
 from flask_appbuilder import Model
 from flask_appbuilder.models.decorators import renders
 from flask_appbuilder.security.sqla.models import User
@@ -562,12 +562,20 @@ class Dashboard(Model, AuditMixinNullable, ImportMixin):
 
         # override the dashboard
         existing_dashboard = None
+        existing_slug = None  
         for dash in session.query(Dashboard).all():
-            if ('remote_id' in dash.params_dict and
-                    dash.params_dict['remote_id'] ==
-                    dashboard_to_import.id):
-                existing_dashboard = dash
-
+            # if ('remote_id' in dash.params_dict and
+            #         dash.params_dict['remote_id'] ==
+            #         dashboard_to_import.id):
+            #     existing_dashboard = dash
+            if (dash.slug == dashboard_to_import.slug):
+                existing_slug = True
+                logging.info('Dashboard with same slug exists. Dashboard id {} Dashboard title: {}'.format(
+                    dash.id, dash.dashboard_title))
+        if existing_slug:
+            flash(u'Dashboard with same slug exists. Update the slug and reimport', 'danger')
+            session.rollback()
+            return None
         dashboard_to_import.id = None
         if dashboard_to_import.position_json is not None:
             alter_positions(dashboard_to_import, old_to_new_slc_id_dict)
@@ -851,6 +859,7 @@ class Database(Model, AuditMixinNullable, ImportMixin):
 
         with closing(engine.raw_connection()) as conn:
             with closing(conn.cursor()) as cursor:
+                st_seconds = datetime.now()
                 for sql in sqls[:-1]:
                     _log_query(sql)
                     self.db_engine_spec.execute(cursor, sql)
@@ -858,7 +867,10 @@ class Database(Model, AuditMixinNullable, ImportMixin):
 
                 _log_query(sqls[-1])
                 self.db_engine_spec.execute(cursor, sqls[-1])
-
+                
+                logging.info('[PERFORMANCE CHECK] query response time from db {0} '.format(datetime.now()-st_seconds))
+               
+                st_seconds = datetime.now()
                 if cursor.description is not None:
                     columns = [col_desc[0] for col_desc in cursor.description]
                 else:
@@ -873,6 +885,8 @@ class Database(Model, AuditMixinNullable, ImportMixin):
                 for k, v in df.dtypes.items():
                     if v.type == numpy.object_ and needs_conversion(df[k]):
                         df[k] = df[k].apply(utils.json_dumps_w_dates)
+
+                logging.info('[PERFORMANCE CHECK] pandas data frame formation time after response {0} '.format(datetime.now()-st_seconds))        
                 return df
 
     def compile_sqla_query(self, qry, schema=None):

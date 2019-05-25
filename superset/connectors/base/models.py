@@ -352,6 +352,7 @@ class BaseColumn(AuditMixinNullable, ImportMixin):
     groupby = Column(Boolean, default=True)
     filterable = Column(Boolean, default=True)
     description = Column(Text)
+    html_renderer = Column(Text)
     is_dttm = None
 
     # [optional] Set this to support import/export functionality
@@ -397,7 +398,7 @@ class BaseColumn(AuditMixinNullable, ImportMixin):
         attrs = (
             'id', 'column_name', 'verbose_name', 'description', 'expression',
             'filterable', 'groupby', 'is_dttm', 'type', 
-            'database_expression', 'python_date_format', 'backend'
+            'database_expression', 'python_date_format', 'backend' , 'html_renderer'
         )
         return {s: getattr(self, s) for s in attrs if hasattr(self, s)}
 

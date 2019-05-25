@@ -52,7 +52,7 @@ class TableColumnInlineView(CompactCRUDMixin, SupersetModelView):  # noqa
         'column_name', 'verbose_name', 'description',
         'type', 'groupby', 'filterable',
         'table', 'expression',
-        'is_dttm', 'python_date_format', 'database_expression']
+        'is_dttm', 'python_date_format', 'database_expression', 'html_renderer']
     add_columns = edit_columns
     list_columns = [
         'column_name', 'verbose_name', 'type', 'groupby', 'filterable',
@@ -92,6 +92,9 @@ class TableColumnInlineView(CompactCRUDMixin, SupersetModelView):  # noqa
             "`Ex: TO_DATE('{}', 'YYYY-MM-DD HH24:MI:SS')` for Oracle "
             'Superset uses default expression based on DB URI if this '
             'field is blank.', True),
+        'html_renderer': utils.markdown(
+            'The HTML renderer to use as a display for column.'
+            'This property is not applicable for column type Numeric and DateTime.', True),
     }
     label_columns = {
         'column_name': _('Column'),
@@ -105,6 +108,7 @@ class TableColumnInlineView(CompactCRUDMixin, SupersetModelView):  # noqa
         'python_date_format': _('Datetime Format'),
         'database_expression': _('Database Expression'),
         'type': _('Type'),
+        'html_renderer': _('HTML Renderer'),
     }
 
 

@@ -125,6 +125,19 @@ function ColumnCollectionTable({
               }
               control={<TextControl />}
             />
+                        <Field
+              fieldKey="html_renderer"
+              label={t('HTML Renderer')}
+              descr={
+                <div>
+                  {t(` 
+                  The HTML renderer to use as a display for column.
+                  This property is not applicable for column type Numeric and DateTime.
+                  `)}
+                </div>
+              }
+              control={<TextControl />}
+            />
           </Fieldset>
         </FormContainer>
       }

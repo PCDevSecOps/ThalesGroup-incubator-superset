@@ -40,12 +40,12 @@ pipeline {
     stage("Build and test") {
       parallel {
 
-        stage("Unit test") {
-          steps {
-            echo "Starting unit test execution."
-            sh "./scripts/execute_unittest.sh ${env.testWithDatabase}"
-          }
-        }
+        // stage("Unit test") {
+        //   steps {
+        //     echo "Starting unit test execution."
+        //     sh "./scripts/execute_unittest.sh ${env.testWithDatabase}"
+        //   }
+        // }
         stage("Code coverage") {
           steps {
             echo "Run Commmands to execute code coverage test"

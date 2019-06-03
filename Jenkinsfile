@@ -1,8 +1,8 @@
-@Library('jenkins_lib')_
+// @Library('jenkins_lib')_
 
 pipeline {
   //agent {label 'slave'}
-  agent {label 'nebula-slave03'}
+  // agent {label 'nebula-slave03'}
 
     environment {
     // Define global environment variables in this
@@ -24,7 +24,7 @@ pipeline {
     stage("Define Release version"){
       steps {
         script {
-          versionDefine()
+         // versionDefine()
         }
       }
     }
@@ -33,8 +33,8 @@ pipeline {
       steps {
         // Updating Superset image tag in superset.yml
         echo "Updating Superset image tag"
-        sh "make update_image_tag DOCKER_IMAGE_TAG=${env.dockerTag} SUPERSET_INVENTORY_FILE_PATH=${env.jenkinsInventoryFilePath}"
-        echo "Updated Superset image tag"
+       // sh "make update_image_tag DOCKER_IMAGE_TAG=${env.dockerTag} SUPERSET_INVENTORY_FILE_PATH=${env.jenkinsInventoryFilePath}"
+       // echo "Updated Superset image tag"
       }
     }
     stage("Build and test") {
@@ -137,8 +137,8 @@ pipeline {
 
   post {
     always {
-      reports_alerts(env.CHECKSTYLE_FILE, env.UNIT_RESULT, env.COBERTURA_REPORT, env.ALLURE_REPORT, env.HTML_REPORT)
-      slackalert('jenkins-ui-alerts')
+     // reports_alerts(env.CHECKSTYLE_FILE, env.UNIT_RESULT, env.COBERTURA_REPORT, env.ALLURE_REPORT, env.HTML_REPORT)
+     // slackalert('jenkins-ui-alerts')
     }
   }
 }

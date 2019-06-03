@@ -58,7 +58,7 @@ pipeline {
         }
       }
     }
-    
+
     stage("Build or Compile") {
       steps {
         echo "Run Commmands to trigger build"
@@ -72,66 +72,66 @@ pipeline {
       }
     }
 
-    stage('Code Quality with SonarQube') {
-       steps {
-        script {
-          def scannerHome = tool 'sonar';
-          withSonarQubeEnv('sonar') {
-            echo "sonar"
-            sh 'sonar-scanner -Dsonar.projectKey=incubator-superset -Dsonar.sources=. -Dsonar.exclusions=rvf-automation/**'
-          }
-        }
-      }
-    }
+    // stage('Code Quality with SonarQube') {
+    //    steps {
+    //     script {
+    //       def scannerHome = tool 'sonar';
+    //       withSonarQubeEnv('sonar') {
+    //         echo "sonar"
+    //         sh 'sonar-scanner -Dsonar.projectKey=incubator-superset -Dsonar.sources=. -Dsonar.exclusions=rvf-automation/**'
+    //       }
+    //     }
+    //   }
+    // }
 
-    stage('Create RPMs') {
-      steps {
-        echo "Run Commmand to trigger rpm build"
-        sh  "./build_rpm.sh ${VERSION} ${RELEASE}"
-      }
-    }
+    // stage('Create RPMs') {
+    //   steps {
+    //     echo "Run Commmand to trigger rpm build"
+    //     sh  "./build_rpm.sh ${VERSION} ${RELEASE}"
+    //   }
+    // }
 
-    stage("Push rpm images in artifactory"){
-      steps{
-        script{
-          rpm_push( env.buildType, 'dist/installer', 'ggn-dev-rpms/raf' )
-        }
-      }
-    }
+    // stage("Push rpm images in artifactory"){
+    //   steps{
+    //     script{
+    //       rpm_push( env.buildType, 'dist/installer', 'ggn-dev-rpms/raf' )
+    //     }
+    //   }
+    // }
 
-    stage("Deploy the particular plugin") {
-      when {
-        expression {
-          env.buildType ==~ /(feature|PR-.*|fix)/
-        }
-      }
-      steps {
-        // Stubs should be used to perform functional testing
-        echo "Deploy the Artifact on ephemeral environment"
-      }
-    }
+    // stage("Deploy the particular plugin") {
+    //   when {
+    //     expression {
+    //       env.buildType ==~ /(feature|PR-.*|fix)/
+    //     }
+    //   }
+    //   steps {
+    //     // Stubs should be used to perform functional testing
+    //     echo "Deploy the Artifact on ephemeral environment"
+    //   }
+    // }
 
-    stage('Create Docker Image') {
-      steps {
-        echo "Creating docker build..."
-        sh "make docker_build"
-      }
-    }
+    // stage('Create Docker Image') {
+    //   steps {
+    //     echo "Creating docker build..."
+    //     sh "make docker_build"
+    //   }
+    // }
 
-    stage('Tagging Docker Image') {
-      steps {
-        echo "Tagging docker image..."
-        sh "make docker_tag DOCKER_IMAGE_TAG=${env.dockerTag}"
-      }
-    }
+    // stage('Tagging Docker Image') {
+    //   steps {
+    //     echo "Tagging docker image..."
+    //     sh "make docker_tag DOCKER_IMAGE_TAG=${env.dockerTag}"
+    //   }
+    // }
 
-    stage("Push docker images to artifactory"){
-      steps{
-        script{
-              docker_push( env.buildType, 'guavus-superset' )
-        }
-      }
-    }
+    // stage("Push docker images to artifactory"){
+    //   steps{
+    //     script{
+    //           docker_push( env.buildType, 'guavus-superset' )
+    //     }
+    //   }
+    // }
 
   }
 

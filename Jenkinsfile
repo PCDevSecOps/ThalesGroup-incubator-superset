@@ -21,13 +21,13 @@ pipeline {
   }
   stages {
 
-    stage("Define Release version"){
-      steps {
-        script {
-         // versionDefine()
-        }
-      }
-    }
+    // stage("Define Release version"){
+    //   steps {
+    //     script {
+    //       versionDefine()
+    //     }
+    //   }
+    // }
 
     stage("Update Superset Image Tag") {
       steps {
@@ -135,10 +135,10 @@ pipeline {
 
   }
 
-  post {
-    always {
-     // reports_alerts(env.CHECKSTYLE_FILE, env.UNIT_RESULT, env.COBERTURA_REPORT, env.ALLURE_REPORT, env.HTML_REPORT)
-     // slackalert('jenkins-ui-alerts')
-    }
-  }
+  // post {
+  //   always {
+  //     reports_alerts(env.CHECKSTYLE_FILE, env.UNIT_RESULT, env.COBERTURA_REPORT, env.ALLURE_REPORT, env.HTML_REPORT)
+  //     slackalert('jenkins-ui-alerts')
+  //   }
+  // }
 }

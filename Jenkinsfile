@@ -1,7 +1,7 @@
 // @Library('jenkins_lib')_
 
 pipeline {
-  //agent {label 'slave'}
+  agent any
   // agent {label 'nebula-slave03'}
 
     environment {

@@ -268,12 +268,11 @@ function nvd3Vis(element, props) {
     return types.indexOf(vizType) >= 0;
   }
 
-  function findYAxisField(key, publishedColumns) {
+  function findAxisField(key, publishedColumns) {
 
     return publishedColumns.find((column) => {
       return key == column
     });
-
   }
 
   const drawGraph = function () {
@@ -320,25 +319,37 @@ function nvd3Vis(element, props) {
           if (tableFilter) {
             const publishedColumns = formData.publishColumns;
             let yColumn;
+            let yColumnLabel;
             let metric;
+            let key = e.series.key;
+
             if (formData.metrics.length == 1) {
               metric = formData.metrics[0];
             } else {
-              let key = e.series.key;
               metric = formData.metrics.find((metric) => {
-                return key.includes(metric.label);
+                return metric['expressionType'] ?  key.includes(metric.label) : key.includes(metric);
               })
             }
-            if (metric && metric.column) {
+
+            if (metric && metric.expressionType === undefined) {
+              yColumn = metric;
+              yColumnLabel = metric;
+            } else if (metric && metric.expressionType === 'SIMPLE') {
               yColumn = metric.column.column_name;
+              yColumnLabel = metric.label;
+            } else if (metric && metric.expressionType === 'SQL') {
+              yColumn = metric.label;
+              yColumnLabel = metric.label;
             }
-            const xField = formData.granularitySqla;
-            const yField = findYAxisField(yColumn, publishedColumns);
-            
+
+            const xField = findAxisField(formData.granularitySqla, publishedColumns);
+            const yField = findAxisField(yColumn, publishedColumns) != undefined ? yColumnLabel : undefined;
+
             if (xField != undefined && e.point) onAddFilter(xField, e.point.x, false, !yField);
             if (yField != undefined && e.point) onAddFilter(yField, e.point.y, false, true);
           }
         });
+
         chart.xScale(d3.time.scale.utc());
         chart.interpolate(lineInterpolation);
         chart.clipEdge(false);

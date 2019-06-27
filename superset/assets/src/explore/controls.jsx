@@ -63,7 +63,6 @@ import { getCategoricalSchemeRegistry, getSequentialSchemeRegistry } from '@supe
 import {
   formatSelectOptionsForRange,
   formatSelectOptions,
-  mainMetric,
 } from '../modules/utils';
 import * as v from './validators';
 import { defaultViewport } from '../modules/geo';
@@ -218,6 +217,24 @@ function columnChoices(datasource) {
       .sort((opt1, opt2) => opt1[1].toLowerCase() > opt2[1].toLowerCase() ? 1 : -1);
   }
   return [];
+}
+
+function columnsAndSavedMetrics(state) {
+
+  let columns = state.datasource ? state.datasource.columns : [];
+
+  const options = [
+    ...columns,
+    ...state.datasource.metrics.map(metric => (
+      metric && (
+        typeof metric === 'string' ?
+        { column_name: metric } :
+        Object.assign({column_name: metric.metric_name}, metric)
+      )
+    )),
+  ];
+
+  return options;
 }
 
 function jsFunctionControl(label, description, extraDescr = null, height = 100, defaultText = '') {
@@ -688,7 +705,7 @@ export const controls = {
     valueRenderer: c => <ColumnOption column={c} />,
     valueKey: 'column_name',
     mapStateToProps: state => ({
-      options: (state.datasource) ? state.datasource.columns : [],
+      options: columnsAndSavedMetrics(state),
     }),
   },
 

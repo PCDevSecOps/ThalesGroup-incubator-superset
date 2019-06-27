@@ -319,31 +319,25 @@ function nvd3Vis(element, props) {
           if (tableFilter) {
             const publishedColumns = formData.publishColumns;
             let yColumn;
-            let yColumnLabel;
             let metric;
-            let key = e.series.key;
+            const key = e.series.key;
 
             if (formData.metrics.length == 1) {
               metric = formData.metrics[0];
             } else {
               metric = formData.metrics.find((metric) => {
-                return metric['expressionType'] ?  key.includes(metric.label) : key.includes(metric);
+                return metric.hasOwnProperty('expressionType') ?  key.includes(metric.label) : key.includes(metric);
               })
             }
 
-            if (metric && metric.expressionType === undefined) {
+            if (metric && !metric.hasOwnProperty('expressionType')) {
               yColumn = metric;
-              yColumnLabel = metric;
-            } else if (metric && metric.expressionType === 'SIMPLE') {
-              yColumn = metric.column.column_name;
-              yColumnLabel = metric.label;
-            } else if (metric && metric.expressionType === 'SQL') {
+            } else if (metric && metric.hasOwnProperty('label')) {
               yColumn = metric.label;
-              yColumnLabel = metric.label;
             }
 
             const xField = findAxisField(formData.granularitySqla, publishedColumns);
-            const yField = findAxisField(yColumn, publishedColumns) != undefined ? yColumnLabel : undefined;
+            const yField = findAxisField(yColumn, publishedColumns);
 
             if (xField != undefined && e.point) onAddFilter(xField, e.point.x, false, !yField);
             if (yField != undefined && e.point) onAddFilter(yField, e.point.y, false, true);

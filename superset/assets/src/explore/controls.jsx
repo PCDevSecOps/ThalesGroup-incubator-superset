@@ -69,6 +69,7 @@ import * as v from './validators';
 import { defaultViewport } from '../modules/geo';
 import ColumnOption from '../components/ColumnOption';
 import OptionDescription from '../components/OptionDescription';
+import * as Jira from './jira-payload-format.json'
 
 const categoricalSchemeRegistry = getCategoricalSchemeRegistry();
 const sequentialSchemeRegistry = getSequentialSchemeRegistry();
@@ -241,6 +242,25 @@ function jsFunctionControl(label, description, extraDescr = null, height = 100, 
       readOnly: !state.common.conf.ENABLE_JAVASCRIPT_CONTROLS,
     }),
   };
+}
+
+function jsonDataControl(label, description,defaultText = '',mapStateToProps=null, extraDescr = null, height = 100) {
+  return {
+    type: 'TextAreaControl',
+    language: 'json',
+    label,
+    description,
+    height,
+    default: defaultText,
+    aboveEditorSection: (
+      <div>
+        <p>{description}</p>
+        {extraDescr}
+      </div>
+    ),
+    mapStateToProps: mapStateToProps,
+  };
+
 }
 
 export const controls = {
@@ -2219,10 +2239,39 @@ export const controls = {
   },
   rest_actions: {
     "type": "HiddenControl",
-    "label": "Rest Actions",
+    "label": t("Rest Actions"),
     "hidden": true,
     "description": "rest actions"
   },
+  raise_ticket_action:  {
+    type: 'CheckboxControl',
+    label: t('Enable Raise Ticket'),
+    description: t('Add an option to raise tickets from chart.'),
+    default: false,
+    mapStateToProps: state => ({
+      disabled: state.common.conf.TICKET_GENERATION_SYSTEM_ENDPOINT == '',
+      label: state.common.conf.TICKET_GENERATION_SYSTEM_ENDPOINT == '' ? t('Enable Raise Ticket (Not Configured)') : t('Enable Raise Ticket')
+    })
+  },
+
+  raise_ticket_action_payload: jsonDataControl(
+    t('Payload Format'),
+    t('Raise Ticket payload format with placeholder'),
+    JSON.stringify(Jira.default, null, '\t'),
+    state => ({
+      hidden: state.common.conf.TICKET_GENERATION_SYSTEM_ENDPOINT == '',
+    })
+  ),
+  raise_ticket_action_message: {
+    type: 'TextControl',
+    label: t('Success Message Format'),
+    default: t('Ticket %key% created successfully'),
+    description: t('The message to be shown on successful ticket generation'),
+    mapStateToProps: state => ({
+      hidden: state.common.conf.TICKET_GENERATION_SYSTEM_ENDPOINT == '',
+    })
+  },
+
   url_params: {
     type: 'HiddenControl',
     label: t('URL Parameters'),

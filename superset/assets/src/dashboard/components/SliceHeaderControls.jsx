@@ -82,7 +82,10 @@ class SliceHeaderControls extends React.PureComponent {
       this.props.slice.slice_id,
     );
     this.restActions = this.props.slice.form_data.rest_actions || [];
-    this.addNavigateToDashboardAction(this.restActions)
+    const navigate_action = this.getNavigateToDashboardAction();
+    const raise_ticket_action = this.getRaiseTicketAction();
+    if(navigate_action) this.restActions.push(navigate_action);
+    if(raise_ticket_action) this.restActions.push(raise_ticket_action);
 
     this.renderRestActions = this.renderRestActions.bind(this);
     this.executeRestAction = this.props.executeRestAction.bind(this);
@@ -91,7 +94,7 @@ class SliceHeaderControls extends React.PureComponent {
     };
   }
 
-  addNavigateToDashboardAction(restActions) {
+  getNavigateToDashboardAction() {
     if (this.props.slice.form_data.navigate_to_dashboards && this.props.slice.form_data.navigate_to_dash_link_name) {
       let navigateToDashURL = APPLICATION_PREFIX + "/superset/dashboard/" + this.props.slice.form_data.navigate_to_dashboards + "/";
       let navigateToDashAction = {
@@ -99,7 +102,24 @@ class SliceHeaderControls extends React.PureComponent {
         "url": navigateToDashURL,
         "method": "GET"
       };
-      restActions.push(navigateToDashAction);
+      return navigateToDashAction;
+    }
+  }
+
+  getRaiseTicketAction() {
+    let raise_ticket_action
+    if(this.props.conf['TICKET_GENERATION_SYSTEM_ENDPOINT'] != '') {
+      const raise_ticket_payload = this.props.slice.form_data.raise_ticket_action_payload
+      if (this.props.slice.form_data.raise_ticket_action) {
+        raise_ticket_action = {
+          "label": "Raise Ticket",
+          "url": "TICKET_GENERATION_SYSTEM_ENDPOINT",
+          "method": "POST",
+          "data": JSON.parse(raise_ticket_payload),
+          "success_message": this.props.slice.form_data.raise_ticket_action_message,
+        };
+    }
+    return raise_ticket_action
     }
   }
 
@@ -159,7 +179,7 @@ class SliceHeaderControls extends React.PureComponent {
 
 
   render() {
-    const { slice, isCached, cachedDttm, updatedDttm } = this.props;
+    const { slice, isCached, cachedDttm, updatedDttm, conf } = this.props;
     const cachedWhen = moment.utc(cachedDttm).fromNow();
     const updatedWhen = updatedDttm ? moment.utc(updatedDttm).fromNow() : '';
     const refreshTooltip = isCached

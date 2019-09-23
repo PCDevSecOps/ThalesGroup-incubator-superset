@@ -97,6 +97,11 @@ export const actions = {
   controlSetRows: [
     [<h1 className="section-header">{t('Navigate to Dashboard')}</h1>],
     ['navigate_to_dash_link_name','navigate_to_dashboards'],
+    [<h1 className="section-header">{t('Raise Ticket')}</h1>],
+    ['raise_ticket_action'],
+    ['raise_ticket_action_payload'],
+    ['raise_ticket_action_message'],
+
   ],
 };
 

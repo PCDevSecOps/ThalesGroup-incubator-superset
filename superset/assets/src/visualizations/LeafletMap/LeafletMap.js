@@ -14,7 +14,7 @@ const propTypes = {
     onAddFilter: PropTypes.func,
   };
 
-function NOOP() {} 
+function NOOP() {}
 
 /**
  * Leaflet Map Visualization
@@ -22,7 +22,7 @@ function NOOP() {}
  * @param {*} props
  */
 function LeafletMap(element, props) {
- 
+
     const {height, payload, formData ,onAddFilter = NOOP } = props;
 
     const POLYGON = 'Polygon';
@@ -207,7 +207,6 @@ function LeafletMap(element, props) {
             'type': 'FeatureCollection',
             'features': getFeatures(),
         }
-        console.log(geoJson);
     }
 
     function renderBasicMap() {

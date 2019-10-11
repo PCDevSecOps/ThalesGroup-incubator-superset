@@ -1781,7 +1781,7 @@ class LeafletViz(BaseViz):
         fd = self.form_data
 
         mt = {
-          'aggregate':'MAX',
+          'aggregate':'COUNT_DISTINCT',
           'column':{
                     'column_name': 'downlink_bytes',
                     'database_expression': None,

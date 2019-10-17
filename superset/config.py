@@ -402,7 +402,7 @@ CELERY_CONFIG = None
 # HTTP_HEADERS = {'X-Frame-Options': 'SAMEORIGIN'}
 # If you need to allow iframes from other domains (and are
 # aware of the risks), you can disable this header:
-HTTP_HEADERS = {}
+HTTP_HEADERS = {'X-Frame-Options': 'http://192.168.135.114'}
 
 # The db id here results in selecting this one as a default in SQL Lab
 DEFAULT_DB_ID = None

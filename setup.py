@@ -115,7 +115,7 @@ setup(
         'mako==1.0.7',
         'markdown==3.0',
         'markupsafe==1.0',
-        'numpy==1.15.2',
+        'numpy==1.17.2',
         'pandas==0.23.1',
         'parsedatetime==2.0.0',
         'pathlib2==2.3.0',

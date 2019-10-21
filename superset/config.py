@@ -402,7 +402,7 @@ CELERY_CONFIG = None
 # HTTP_HEADERS = {'X-Frame-Options': 'SAMEORIGIN'}
 # If you need to allow iframes from other domains (and are
 # aware of the risks), you can disable this header:
-HTTP_HEADERS = {'X-Frame-Options': 'http://192.168.135.114'}
+HTTP_HEADERS = {}
 
 # The db id here results in selecting this one as a default in SQL Lab
 DEFAULT_DB_ID = None
@@ -592,7 +592,7 @@ BUG_REPORT_URL = None
 # What is the Last N days relative in the time selector to:
 # 'today' means it is midnight (00:00:00) of today in the local timezone
 # 'now' means it is relative to the query issue time
-DEFAULT_RELATIVE_END_TIME = 'today'
+DEFAULT_RELATIVE_END_TIME = 'now'
 
 # Is epoch_s/epoch_ms datetime format supposed to be considered since UTC ?
 # If not, it is sassumed then the epoch_s/epoch_ms is seconds since 1/1/1970

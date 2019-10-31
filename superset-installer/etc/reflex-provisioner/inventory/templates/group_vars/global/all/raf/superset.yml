@@ -73,7 +73,7 @@ superset_docker_restart_policy: "Always"
 superset_service_port: "32443"
 superset_nginx_port: "32443"
 
-SUPERSET_NPROCESSORS: 1
+SUPERSET_NPROCESSORS: 4
 SUPERSET_SERVER_WORKER_TIMEOUT: 300 #in secs
 SUPERSET_CONTAINER_PORT: 8088
 
@@ -123,6 +123,7 @@ SUPERSET_AUTH_LDAP_SEARCH_FILTER: ""
 RVF_APP_NAME: "Dashboard Builder"
 RVF_HELP_ENABLED: False
 SUPERSET_SESSION_LIFETIME_SECONDS: "3600" # stale session timeout
+RVF_LOG_FORMAT: "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
 RVF_LOG_LEVEL: "INFO"
 RVF_CACHE_DEFAULT_TIMEOUT: "{{ 60 * 60 * 24 }}"
 RVF_CACHE_TYPE: 'null'
@@ -136,6 +137,10 @@ RVF_KNOX_SSO_PUBLIC_KEY: ""
 RVF_KNOX_SSO_URL: ""
 RVF_KNOX_SSO_COOKIE_NAME: "hadoop-jwt"
 RVF_KNOX_SSO_ORIGINALURL: "originalUrl"
-RVF_WTF_CSRF_EXEMPT_STR: ""
 RVF_ENABLE_CHUNK_ENCODING: "True"
 RVF_APPLICATION_PREFIX: ""
+
+# CSRF configuration
+RVF_WTF_CSRF_ENABLED: "True"
+RVF_WTF_CSRF_TIME_LIMIT: "{{ 60 * 60 * 24 * 7 }}"
+RVF_WTF_CSRF_EXEMPT_STR: ""

@@ -134,8 +134,6 @@ export function encryptText(_m) {
   var _e = CryptoJS.AES.encrypt(_m, _k, {
       iv: _i
   });
-  _e = _i.concat(_e.ciphertext).toString(CryptoJS.enc.Base64);
-
-  return _e;
+  var _t = (_e.iv).concat(_e.ciphertext).toString(CryptoJS.enc.Base64);
+  return _t;
 }
-

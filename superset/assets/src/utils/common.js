@@ -135,5 +135,10 @@ export function encryptText(_m) {
       iv: _i
   });
   var _t = (_e.iv).concat(_e.ciphertext).toString(CryptoJS.enc.Base64);
+  /*
+  var _x = _i.concat(_e.ciphertext).toString(CryptoJS.enc.Base64);
+  console.log(_t) //admin (after encoding) -> mR7g s9Tp Iau4 l/Xr uBOo K5Az PK97 ACHn kPp5 oIBy LNI=
+  console.log(_x) //admin (after encoding) -> mR7g s9Tp Iau4 l/Xr uBOo K5Az PK97 ACHn kPp5 oIBy LNKQ Mzyv ewAh 55D6 eaCA cizS
+  */
   return _t;
 }

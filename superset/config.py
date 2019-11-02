@@ -600,11 +600,11 @@ BUG_REPORT_URL = None
 DEFAULT_RELATIVE_END_TIME = 'now'
 
 # Is epoch_s/epoch_ms datetime format supposed to be considered since UTC ?
-# If not, it is assumed then the epoch_s/epoch_ms is seconds since 1/1/1970
+# If not, it is sassumed then the epoch_s/epoch_ms is seconds since 1/1/1970
 # localtime (in the tz where the superset webserver is running)
 IS_EPOCH_S_TRULY_UTC = False
 
-# set on IS_KNOX_SSO_ENABLED here ,because of unit test cases and rest KNOX varibales are defined in superset_config.py
+# set on IS_KNOX_SSO_ENABLED here ,because of unit test cases and rest KNOX varibales are defined in superset_config.py 
 IS_KNOX_SSO_ENABLED = False
 
 # A function that intercepts the SQL to be executed and can alter it.

@@ -155,7 +155,7 @@ TICKET_GENERATION_SYSTEM_USER = get_env_variable('TICKET_GENERATION_SYSTEM_USER'
 # Set to False to disable all CSRF protection.
 WTF_CSRF_ENABLED = boolify('WTF_CSRF_ENABLED')
 # Max age in seconds for CSRF tokens. Default is 3600. If set to None, the CSRF token is valid for the life of the session.
-WTF_CSRF_TIME_LIMIT = get_env_variable('WTF_CSRF_TIME_LIMIT')
+WTF_CSRF_TIME_LIMIT = int(get_env_variable('WTF_CSRF_TIME_LIMIT'))
 # expose deployement var for WTF_CSRF_EXEMPT_LIST
 WTF_CSRF_EXEMPT_STR = get_env_variable('WTF_CSRF_EXEMPT_STR').strip()
 if WTF_CSRF_EXEMPT_STR:

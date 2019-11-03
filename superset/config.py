@@ -118,6 +118,7 @@ TICKET_GENERATION_SYSTEM_NAME = 'JIRA'
 TICKET_GENERATION_SYSTEM_ENDPOINT = 'https://guavus-jira.atlassian.net/rest/api/2/issue/'
 TICKET_GENERATION_SYSTEM_API_KEY = 'NnxaHz4NQPIDI7e3zUF7B357'
 TICKET_GENERATION_SYSTEM_USER ='raf-operator@guavus.com'
+
 # Use this flag to enable/disable walkme
 WALKME_ENABLED = True
 

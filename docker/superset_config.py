@@ -50,6 +50,10 @@ CORS_OPTIONS = eval(get_env_variable('CORS_OPTIONS'))
 # Application Root configuration
 APPLICATION_PREFIX = get_env_variable('APPLICATION_PREFIX')
 
+# What is the Last N days relative in the time selector to:
+# 'today'/'now'
+DEFAULT_RELATIVE_END_TIME = get_env_variable('DEFAULT_RELATIVE_END_TIME')
+
 # WalkMe feature enabled/disbaled
 WALKME_ENABLED = boolify(get_env_variable('WALKME_ENABLED'))
 

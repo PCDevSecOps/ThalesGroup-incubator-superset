@@ -43,7 +43,7 @@ spec:
         - name: REDIS_PORT
           value: "6379"
         - name: SUPERSET_ENV
-          value: local
+          value: production
         - name: IS_KERBEROS_ENABLED
           value: "{{ superset_kerberos_enabled }}"
         - name: AUTH_TYPE
@@ -118,6 +118,8 @@ spec:
           value: "{{ RVF_CACHE_DEFAULT_TIMEOUT }}"
         - name: CACHE_TYPE
           value: "{{ RVF_CACHE_TYPE }}"
+        - name: DEFAULT_RELATIVE_END_TIME
+          value: "{{ RVF_DEFAULT_RELATIVE_END_TIME }}"
         - name: ENABLE_CORS
           value: "{{ RVF_ENABLE_CORS }}"
         - name: CORS_OPTIONS

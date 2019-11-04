@@ -1113,7 +1113,9 @@ class BigNumberViz(BaseViz):
             raise Exception(_('Pick a metric!'))
         d['metrics'] = [self.form_data.get('metric')]
         self.form_data['metric'] = metric
-        d['row_limit'] = None
+        row_limit = self.form_data.get('row_limit')
+        if row_limit == -1:
+            d['row_limit'] = None
         return d
 
 
@@ -1139,7 +1141,9 @@ class BigNumberTotalViz(BaseViz):
             d['metrics'] = [metric]
 
         self.form_data['metric'] = metric
-        d['row_limit'] = None
+        row_limit = self.form_data.get('row_limit')
+        if row_limit == -1:
+            d['row_limit'] = None
         return d
 
 

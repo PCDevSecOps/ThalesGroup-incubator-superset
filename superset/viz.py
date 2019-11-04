@@ -33,6 +33,7 @@ import pickle as pkl
 import re
 import traceback
 import uuid
+import simplejson as json
 
 from dateutil import relativedelta as rdelta
 from flask import request
@@ -44,7 +45,6 @@ import numpy as np
 import pandas as pd
 from pandas.tseries.frequencies import to_offset
 import polyline
-import simplejson as json
 
 from superset import app, cache, get_css_manifest_files
 from superset.exceptions import NullValueException, SpatialException
@@ -190,6 +190,10 @@ class BaseViz(object):
 
     def get_samples(self):
         query_obj = self.query_obj()
+        if not query_obj:
+            # Return empty dataframe in case of no query to avoid export CSV error
+            return pd.DataFrame().to_dict(orient='records')
+
         query_obj.update({
             'groupby': [],
             'metrics': [],
@@ -204,7 +208,7 @@ class BaseViz(object):
         if not query_obj:
             query_obj = self.query_obj()
         if not query_obj:
-            return None
+            return pd.DataFrame()
 
         self.error_msg = ''
 
@@ -518,6 +522,18 @@ class BaseViz(object):
 
     def get_csv(self):
         df = self.get_df()
+        if df is None:
+            df = pd.DataFrame()
+            include_index = not isinstance(df.index, pd.RangeIndex)
+            return df.to_csv(index=include_index, **config.get('CSV_EXPORT'))
+        verbose_col_map = self.datasource.data['verbose_map']
+        verbose_column_names = []
+        for col in df.columns:
+            if col in verbose_col_map:
+                verbose_column_names.append(verbose_col_map[col])
+            else:
+                verbose_column_names.append(col)
+        df.columns = verbose_column_names
         include_index = not isinstance(df.index, pd.RangeIndex)
         return df.to_csv(index=include_index, **config.get('CSV_EXPORT'))
 

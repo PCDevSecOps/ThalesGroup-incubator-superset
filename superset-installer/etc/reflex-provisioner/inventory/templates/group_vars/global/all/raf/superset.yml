@@ -73,7 +73,7 @@ superset_docker_restart_policy: "Always"
 superset_service_port: "32443"
 superset_nginx_port: "32443"
 
-SUPERSET_NPROCESSORS: 4
+SUPERSET_NPROCESSORS: 1
 SUPERSET_SERVER_WORKER_TIMEOUT: 300 #in secs
 SUPERSET_CONTAINER_PORT: 8088
 
@@ -126,7 +126,7 @@ SUPERSET_SESSION_LIFETIME_SECONDS: "3600" # stale session timeout
 RVF_LOG_FORMAT: "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
 RVF_LOG_LEVEL: "INFO"
 RVF_CACHE_DEFAULT_TIMEOUT: "{{ 60*60*24 }}"
-RVF_CACHE_TYPE: 'simple' # enables simple caching to postgres
+RVF_CACHE_TYPE: 'null'
 RVF_ENABLE_CORS: True
 RVF_CORS_OPTIONS: "{}"
 RVF_WALKME_ENABLED: True

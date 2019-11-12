@@ -292,7 +292,7 @@ function nvd3Vis(element, props) {
       else {
         const jsDateFormat = convertPyToJsDateFormat(columnObj.python_date_format);
         const momentDate = moment(new Date(pointX));
-        xFieldVal = momentDate.utc().format(jsDateFormat);
+        xFieldVal = momentDate.format(jsDateFormat);
       }
     }
     return xFieldVal;
@@ -334,7 +334,7 @@ function nvd3Vis(element, props) {
             chart.focus.margin({ bottom: 40 });
             chart.focusHeight(80);
           }
-          chart.focus.xScale(d3.time.scale.utc());
+          chart.focus.xScale(d3.time.scale);
         } else {
           chart = nv.models.lineChart();
         }
@@ -412,7 +412,7 @@ function nvd3Vis(element, props) {
             selection = removeSelection ? null : { 'point': e.point, 'seriesIndex': e.seriesIndex, 'pointIndex': e.pointIndex }
           }
         });
-        chart.xScale(d3.time.scale.utc());
+        chart.xScale(d3.time.scale);
         chart.interpolate(lineInterpolation);
         chart.clipEdge(false);
         //listen chart stateChange
@@ -427,7 +427,7 @@ function nvd3Vis(element, props) {
 
       case 'time_pivot':
         chart = nv.models.lineChart();
-        chart.xScale(d3.time.scale.utc());
+        chart.xScale(d3.time.scale);
         chart.interpolate(lineInterpolation);
         break;
 
@@ -503,7 +503,7 @@ function nvd3Vis(element, props) {
 
       case 'compare':
         chart = nv.models.cumulativeLineChart();
-        chart.xScale(d3.time.scale.utc());
+        chart.xScale(d3.time.scale);
         chart.useInteractiveGuideline(true);
         chart.xAxis.showMaxMin(false);
         break;
@@ -531,7 +531,7 @@ function nvd3Vis(element, props) {
         chart = nv.models.stackedAreaChart();
         chart.showControls(showControls);
         chart.style(areaStackedStyle);
-        chart.xScale(d3.time.scale.utc());
+        chart.xScale(d3.time.scale);
         break;
 
       case 'box_plot':
@@ -937,7 +937,7 @@ function nvd3Vis(element, props) {
 
               const tip = tipFactory(e);
               const records = (annotationData[e.name].records || []).map((r) => {
-                const timeValue = new Date(moment.utc(r[e.timeColumn]));
+                const timeValue = new Date(moment(r[e.timeColumn]));
 
                 return {
                   ...r,
@@ -998,8 +998,8 @@ function nvd3Vis(element, props) {
               const tip = tipFactory(e);
 
               const records = (annotationData[e.name].records || []).map((r) => {
-                const timeValue = new Date(moment.utc(r[e.timeColumn]));
-                const intervalEndValue = new Date(moment.utc(r[e.intervalEndColumn]));
+                const timeValue = new Date(moment(r[e.timeColumn]));
+                const intervalEndValue = new Date(moment(r[e.intervalEndColumn]));
                 return {
                   ...r,
                   [e.timeColumn]: timeValue,

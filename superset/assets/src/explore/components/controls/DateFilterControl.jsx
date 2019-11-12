@@ -348,7 +348,7 @@ export default class DateFilterControl extends React.Component {
             <Tab eventKey={2} title="Custom">
               <FormGroup>
                 <PopoverSection
-                  title="Relative to today"
+                  title="Relative to now"
                   isSelected={this.state.type === TYPES.CUSTOM_RANGE}
                   onSelect={this.setTypeCustomRange}
                 >

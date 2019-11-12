@@ -585,7 +585,7 @@ WEBDRIVER_CONFIGURATION = {}
 WEBDRIVER_BASEURL = 'http://0.0.0.0:8080/'
 
 # add timezone and copyright property for footer display
-TIMEZONE = 'UTC'
+TIMEZONE = datetime.now(tz.tzlocal()).tzname()
 
 version_file = open(VERSION_FILE_PATH, 'r')
 APP_VERSION = version_file.read()

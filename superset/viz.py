@@ -128,6 +128,9 @@ class BaseViz(object):
                     label = utils.get_metric_name(o)
                     self.metric_dict[label] = o
 
+        # Get client's timezone for conversion of UTC Timestamps to Local TZ Timestamps
+        self.time_zone = fd.get("tz")
+
         # Cast to list needed to return serializable object in py3
         self.all_metrics = list(self.metric_dict.values())
         self.metric_labels = list(self.metric_dict.keys())
@@ -280,6 +283,7 @@ class BaseViz(object):
         """Building a query object"""
 
         has_kerberos_ticket()
+        client_tz = self.time_zone
         st_seconds = datetime.now()
         form_data = self.form_data
         self.process_query_filters()
@@ -336,6 +340,7 @@ class BaseViz(object):
         }
 
         d = {
+            'timezone': client_tz,
             'granularity': granularity,
             'from_dttm': from_dttm,
             'to_dttm': to_dttm,

@@ -146,7 +146,7 @@ class TableColumn(Model, BaseColumn):
             l.append(col <= text(self.dttm_sql_literal(end_dttm, is_epoch_in_utc)))
         return and_(*l)
 
-    def get_timestamp_expression(self, time_grain):
+    def get_timestamp_expression(self, time_grain, timezone):
         """Getting the time component of the query"""
         label = self.table.get_label(utils.DTTM_ALIAS)
 
@@ -163,7 +163,10 @@ class TableColumn(Model, BaseColumn):
                     f'No grain spec for {time_grain} for database {db.database_name}')
         expr = db.db_engine_spec.get_time_expr(
             self.expression or self.column_name,
-            pdf, time_grain, grain)
+            pdf,
+            time_grain,
+            grain,
+            timezone)
         return literal_column(expr, type_=DateTime).label(label)
 
     @classmethod
@@ -551,6 +554,7 @@ class SqlaTable(Model, BaseDatasource):
 
     def get_sqla_query(  # sqla
             self,
+            timezone,
             groupby, metrics,
             granularity,
             from_dttm, to_dttm,
@@ -643,7 +647,7 @@ class SqlaTable(Model, BaseDatasource):
             time_filters = []
 
             if is_timeseries:
-                timestamp = dttm_col.get_timestamp_expression(time_grain)
+                timestamp = dttm_col.get_timestamp_expression(time_grain, timezone)
                 select_exprs += [timestamp]
                 groupby_exprs_with_timestamp[timestamp.name] = timestamp
 

@@ -191,17 +191,18 @@ def default_hive_query_generator(sql, query_obj, database, datasource_name):
                 en = query_obj['to_dttm']
                 granularity = query_obj['granularity']
                 granularity_in_partitions = (granularity in date_partitions)
-                if 'date' in date_partitions:
-                    # TODO: Support upto Minutes, Seconds
-                    # Currently supported upto DATE (YYYY - MM - DD), HOUR (HH)
-                    if 'hour' in date_partitions:
-                        # Date, Hour based partition
-                        where_clause = where_clause_date_based(st, en, date_partitions, 1)
-                    else:
-                        # Date based partition
-                        where_clause = where_clause_date_based(st, en, date_partitions, 0)
-                sql_updated = replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions)
-                return sql_updated
+                if st and en:
+                    if 'date' in date_partitions:
+                        # TODO: Support upto Minutes, Seconds
+                        # Currently supported upto DATE (YYYY - MM - DD), HOUR (HH)
+                        if 'hour' in date_partitions:
+                            # Date, Hour based partition
+                            where_clause = where_clause_date_based(st, en, date_partitions, 1)
+                        else:
+                            # Date based partition
+                            where_clause = where_clause_date_based(st, en, date_partitions, 0)
+                    sql_updated = replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions)
+                    return sql_updated
 
             if 'date' not in hive_partitions_obj and 'time' in hive_partitions_obj:
                 time_partitions = (hive_partitions_obj['time'])

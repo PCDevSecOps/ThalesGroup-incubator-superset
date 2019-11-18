@@ -61,15 +61,15 @@ def get_partitions_min_grain(time_partitions):
 def get_partitioned_query_format(time_partitions):
     partition_seq = list()
     if 'year' in time_partitions:
-        partition_seq.append(time_partitions['year'] + " = %Y ")
+        partition_seq.append('`' + time_partitions['year'] + '`' + " = %Y ")
     if 'month' in time_partitions:
-        partition_seq.append(time_partitions['month'] + " = %m ")
+        partition_seq.append('`' + time_partitions['month'] + '`' + " = %m ")
     if 'day' in time_partitions:
-        partition_seq.append(time_partitions['day'] + " = %d ")
+        partition_seq.append('`' + time_partitions['day'] + '`' + " = %d ")
     if 'hour' in time_partitions:
-        partition_seq.append(time_partitions['hour'] + " = %H ")
+        partition_seq.append('`' + time_partitions['hour'] + '`' + " = %H ")
     if 'minute' in time_partitions:
-        partition_seq.append(time_partitions['minute'] + " = %M ")
+        partition_seq.append('`' + time_partitions['minute'] + '`' + " = %M ")
 
     partition_seq_str = "AND ".join(partition_seq)
     query_str = "( " + partition_seq_str + ")"

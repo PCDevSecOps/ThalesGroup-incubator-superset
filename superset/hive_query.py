@@ -99,10 +99,9 @@ def get_partitioned_whereclause(_st, _en, gran_seconds, time_partitions):
 # Custom query for Hive Partitons (Date Based)
 def where_clause_date_based(_st, _en, date_partitions, grain):
     time_seq = list()
-
+    part_time_seq = list()
     if grain == 0:
-        # Partition = Date
-        part_time_seq = list()
+        # Partition = Date   
         date = date_partitions['date']
         if _st == _en:
             time_seq.append("(" + _st.strftime('`' + date + '`' + " = '%Y-%m-%d'") + ")")
@@ -111,7 +110,6 @@ def where_clause_date_based(_st, _en, date_partitions, grain):
             _st = _st + timedelta(seconds=GRAIN_VALUE_MAP['PT1D'])
     elif grain == 1:
         # Partition = Date, Hour
-        part_time_seq = list()
         date = date_partitions['date']
         hour = date_partitions['hour']
         if _st == _en:

@@ -789,6 +789,7 @@ class SqlaTable(Model, BaseDatasource):
             else:
                 # run subquery to get top groups
                 subquery_obj = {
+                    'timezone': 'UTC',
                     'prequeries': prequeries,
                     'is_prequery': True,
                     'is_timeseries': False,

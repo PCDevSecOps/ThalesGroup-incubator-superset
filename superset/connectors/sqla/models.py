@@ -145,7 +145,7 @@ class TableColumn(Model, BaseColumn):
             l.append(col <= text(self.dttm_sql_literal(end_dttm)))
         return and_(*l)
 
-    def get_timestamp_expression(self, time_grain, timezone):
+    def get_timestamp_expression(self, time_grain, timezone=None):
         """Getting the time component of the query"""
         label = self.table.get_label(utils.DTTM_ALIAS)
 

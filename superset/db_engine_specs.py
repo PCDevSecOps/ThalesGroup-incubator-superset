@@ -118,6 +118,7 @@ class BaseEngineSpec(object):
     def get_time_expr(cls, expr, pdf, time_grain, grain, timezone):
         if timezone == None:
             timezone = 'UTC'
+        sub_expr = ''
         # if epoch, translate to DATE using db specific conf
         if pdf == 'epoch_s':
             sub_expr = 'from_utc_timestamp(from_unixtime(%s), \'%s\')' % (expr, timezone)

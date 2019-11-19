@@ -142,10 +142,8 @@ def replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_i
 
         sql_updated = re.sub(regex_st, where_clause, sql)
         sql_updated = re.sub(regex_et, '\n', sql_updated)
-        sql_updated = re.sub(' +', ' ', sql_updated)
     else:
         sql_updated = sql.replace("WHERE", " WHERE " + where_clause + " AND ")
-        sql_updated = re.sub(' +', ' ', sql_updated)
     return sql_updated
 
 def get_hive_partitions(database, datasource_name):

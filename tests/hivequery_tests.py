@@ -77,7 +77,7 @@ class HivePartitionQueryTestCase(unittest.TestCase):
             "hour":"hr",
             "minute":"min"
         }
-        self.assertEqual(get_partitioned_query_format(t_p_5),"( `y` = %Y AND m = %m AND d = %d AND hr = %H AND min = %M )")
+        self.assertEqual(get_partitioned_query_format(t_p_5),"( `y` = %Y AND `m` = %m AND `d` = %d AND `hr` = %H AND `min` = %M )")
         t_p_6 = {
             "month":"m",
             "day":"d",

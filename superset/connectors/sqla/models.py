@@ -549,7 +549,7 @@ class SqlaTable(Model, BaseDatasource):
 
     def get_sqla_query(  # sqla
             self,
-            timezone=None,
+            timezone,
             groupby, metrics,
             granularity,
             from_dttm, to_dttm,

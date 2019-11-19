@@ -120,15 +120,18 @@ class BaseEngineSpec(object):
             timezone = 'UTC'
         # if epoch, translate to DATE using db specific conf
         if pdf == 'epoch_s':
-            sub_expr = 'from_utc_timestamp(from_unixtime(%s), \'%s\')' % (expr, timezone)
+            expr = cls.epoch_to_dttm().format(col=expr)
+            if "from_unixtime" in expr:
+                expr = 'from_utc_timestamp(%s, \'%s\')' % (expr, timezone)
         elif pdf == 'epoch_ms':
             # As '/' is not supported in hive, we use DIV
-            expr = expr + ' DIV 1000'
-            sub_expr = 'from_utc_timestamp(from_unixtime(%s), \'%s\')' % (expr, timezone)
+            expr = cls.epoch_ms_to_dttm().format(col=expr)
+            if "from_unixtime" in expr:
+                expr = 'from_utc_timestamp(%s, \'%s\')' % (expr, timezone)
         if grain:
-            return grain.function.format(col=sub_expr)
+            return grain.function.format(col=expr)
         else:
-            return sub_expr
+            return expr
 
     @classmethod
     def get_time_grains(cls):
@@ -164,7 +167,7 @@ class BaseEngineSpec(object):
 
     @classmethod
     def epoch_ms_to_dttm(cls):
-        return cls.epoch_to_dttm().replace('{col}', '({col}/1000)')
+        return cls.epoch_to_dttm().replace('{col}', '({col} DIV 1000)')
 
     @classmethod
     def get_datatype(cls, type_code):

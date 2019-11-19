@@ -146,7 +146,7 @@ class TableColumn(Model, BaseColumn):
             l.append(col <= text(self.dttm_sql_literal(end_dttm, is_epoch_in_utc)))
         return and_(*l)
 
-    def get_timestamp_expression(self, time_grain, timezone):
+    def get_timestamp_expression(self, time_grain, timezone=None):
         """Getting the time component of the query"""
         label = self.table.get_label(utils.DTTM_ALIAS)
 
@@ -794,6 +794,7 @@ class SqlaTable(Model, BaseDatasource):
             else:
                 # run subquery to get top groups
                 subquery_obj = {
+                    'timezone': 'UTC',
                     'prequeries': prequeries,
                     'is_prequery': True,
                     'is_timeseries': False,

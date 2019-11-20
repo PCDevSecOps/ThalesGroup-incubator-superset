@@ -167,7 +167,8 @@ class TableColumn(Model, BaseColumn):
             time_grain,
             grain,
             timezone)
-        return literal_column(expr, type_=DateTime).label(label)
+        # Add the date-time column in select statement for data validation (epoch_s/ epoch_ms)
+        return [literal_column(expr, type_=DateTime).label(label), literal_column(self.expression or self.column_name)]
 
     @classmethod
     def import_obj(cls, i_column):
@@ -648,8 +649,10 @@ class SqlaTable(Model, BaseDatasource):
 
             if is_timeseries:
                 timestamp = dttm_col.get_timestamp_expression(time_grain, timezone)
-                select_exprs += [timestamp]
-                groupby_exprs_with_timestamp[timestamp.name] = timestamp
+                select_exprs += [timestamp[0]]
+                select_exprs += [timestamp[1]]
+                groupby_exprs_with_timestamp[timestamp[0].name] = timestamp[0]
+                groupby_exprs_with_timestamp[timestamp[1].name] = timestamp[1]
 
             # Use main dttm column to support index with secondary dttm columns
             if db_engine_spec.time_secondary_columns and \

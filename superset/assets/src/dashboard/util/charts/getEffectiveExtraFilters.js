@@ -55,12 +55,12 @@ const getFilter = (col, op, val) => {
 }
 
 const valueToStringErr = (value) => {
-  console.log("Error: [Prototype-less object]/ [null] encountered for getEffectiveExtraFilters");
-  return "Error: [Prototype-less object]/ [null] encountered";
+  console.log("Error: [Prototype-less object] parameter encountered for getEffectiveExtraFilters");
+  return "Error: [Prototype-less object] as parameter encountered";
 }
 
 const valueToString = (value) => {
-  return value == null ? valueToStringErr(value) : (typeof value === 'object' && !value.toString ? valueToStringErr(value) : String(value));
+  return value == null ? '' : (typeof value === 'object' && !value.toString ? valueToStringErr(value) : String(value));
 }
 
 /*

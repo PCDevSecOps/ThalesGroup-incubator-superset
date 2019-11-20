@@ -18,6 +18,12 @@
 
 from superset.db_engines.THttpTransport.THttpClientTransport import THttpClientTransport 
 from thrift.transport.TTransport import TBufferedTransport
+from superset import app
+
+# Globals
+config = app.config
+ENABLE_SSL_HIVE_CONNECTION = config.get('ENABLE_SSL_HIVE_CONNECTION')
+CA_CERT_FILE_PATH = config.get('CA_CERT_FILE_PATH')
 
 # TODO: contribute back to pyhive.
 def fetch_logs(self, max_rows=1024,
@@ -66,7 +72,7 @@ def fetch_logs(self, max_rows=1024,
 def remove_http_params_from(url, connect_args):
     # remove custom  http transport vars not req in phive 
     backend_name = url.get_backend_name()
-    http_params = ['principal','transport_mode','mutual_authentication','http_path','service','delegate','force_preemptive','hostname_override','sanitize_mutual_error_response','send_cbt']  
+    http_params = ['verify','scheme','principal','transport_mode','mutual_authentication','http_path','service','delegate','force_preemptive','hostname_override','sanitize_mutual_error_response','send_cbt']  
     if(backend_name == 'hive'):
         for param in http_params:
             if( param in connect_args ):
@@ -120,14 +126,32 @@ def get_http_thrift_transport(url , kwargs):
         send_cbt = get_prop_value('send_cbt',kwargs,True)     
         auth = get_prop_value('auth',kwargs,"NONE")       
         
-        client = THttpClientTransport("http://{}:{}/{}".format(host, port, http_path))
+        scheme = "http"
+        verify = "False"
+        
+        # first update vars as per deployment file
+        if ENABLE_SSL_HIVE_CONNECTION:
+            scheme = "https"
+            verify = CA_CERT_FILE_PATH
+
+        # override verify and scheme  as per ui config if defined there
+        if get_prop_value('verify',kwargs, None):
+            verify = get_prop_value('verify',kwargs, None)  
+
+        if get_prop_value('scheme',kwargs,None):
+             scheme = get_prop_value('scheme',kwargs,None)
+
+        client = THttpClientTransport("{}://{}:{}/{}".format(scheme, host, port, http_path))
         if auth == 'KERBEROS':
             client.set_kerberos_auth(mutual_authentication,
             service, delegate, force_preemptive,
             principal, hostname_override,
             sanitize_mutual_error_response, send_cbt)
         else:  
-            client.set_basic_auth(username, password)  
+            client.set_basic_auth(username, password) 
+
+        if scheme == "https":
+            client.set_verify(verify)     
 
         return TBufferedTransport(client)
     else:

@@ -182,13 +182,13 @@ class ImportMixin(object):
             is_new_obj = True
             # Create new DB object
             obj = cls(**dict_rep)
-            logging.info('Importing new %s %s', obj.__tablename__, str(obj))
+            logging.debug('Importing new %s %s', obj.__tablename__, str(obj))
             if cls.export_parent and parent:
                 setattr(obj, cls.export_parent, parent)
             session.add(obj)
         else:
             is_new_obj = False
-            logging.info('Updating %s %s', obj.__tablename__, str(obj))
+            logging.debug('Updating %s %s', obj.__tablename__, str(obj))
             # Update columns
             for k, v in dict_rep.items():
                 setattr(obj, k, v)
@@ -213,7 +213,7 @@ class ImportMixin(object):
                     to_delete = set(session.query(child_class).filter(
                         and_(*delete_filters))).difference(set(added))
                     for o in to_delete:
-                        logging.info('Deleting %s %s', c, str(obj))
+                        logging.debug('Deleting %s %s', c, str(obj))
                         session.delete(o)
 
         return obj

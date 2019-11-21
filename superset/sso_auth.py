@@ -54,7 +54,7 @@ def _find_user(username, sm):
 
 def parse_hadoop_jwt():
     if config.IS_KNOX_SSO_ENABLED is True:
-        logging.info("Attaching JWT handler")
+        logging.debug("Attaching JWT handler")
         
         jwt_token = request.cookies.get(config.KNOX_SSO_COOKIE_NAME, None)
         logging.debug("Token: %s"%jwt_token)
@@ -86,7 +86,7 @@ def parse_hadoop_jwt():
         token_expiry = int(token_contents['exp'])
         now = int(datetime.now(tz=tz.tzlocal()).timestamp())
 
-        logging.info("Token Expries (token_expiry - now ) in "+ str(token_expiry - now )+" seconds. where token_expiry is "+ str(token_expiry)+" and  now is "+ str(now) )
+        logging.debug("Token Expries (token_expiry - now ) in "+ str(token_expiry - now )+" seconds. where token_expiry is "+ str(token_expiry)+" and  now is "+ str(now) )
         
         #check token_expiry 
         if ( token_expiry - now ) <= 0:

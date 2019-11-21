@@ -188,9 +188,9 @@ def execute_sql_statement(
             )
         query.executed_sql = sql
         with stats_timing('sqllab.query.time_executing_query', stats_logger):
-            logging.info('Running query: \n{}'.format(sql))
+            logging.debug('Running query: \n{}'.format(sql))
             db_engine_spec.execute(cursor, sql, async_=True)
-            logging.info('Handling cursor')
+            logging.debug('Handling cursor')
             db_engine_spec.handle_cursor(cursor, query, session)
 
         with stats_timing('sqllab.query.time_fetching_results', stats_logger):
@@ -233,9 +233,9 @@ def execute_sql_statements(
     # Breaking down into multiple statements
     parsed_query = ParsedQuery(rendered_query)
     statements = parsed_query.get_statements()
-    logging.info(f'Executing {len(statements)} statement(s)')
+    logging.debug(f'Executing {len(statements)} statement(s)')
 
-    logging.info("Set query to 'running'")
+    logging.debug("Set query to 'running'")
     query.status = QueryStatus.RUNNING
     query.start_running_time = now_as_float()
 
@@ -253,7 +253,7 @@ def execute_sql_statements(
             for i, statement in enumerate(statements):
                 # TODO CHECK IF STOPPED
                 msg = f'Running statement {i+1} out of {statement_count}'
-                logging.info(msg)
+                logging.debug(msg)
                 query.set_extra_json_key('progress', msg)
                 session.commit()
                 is_last_statement = i == len(statements) - 1
@@ -293,7 +293,7 @@ def execute_sql_statements(
 
     if store_results:
         key = str(uuid.uuid4())
-        logging.info(f'Storing results in results backend, key: {key}')
+        logging.debug(f'Storing results in results backend, key: {key}')
         with stats_timing('sqllab.query.results_backend_write', stats_logger):
             json_payload = json.dumps(
                 payload, default=json_iso_dttm_ser, ignore_nan=True)

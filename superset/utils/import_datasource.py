@@ -33,7 +33,7 @@ def import_datasource(
      superset instances. Audit metadata isn't copies over.
     """
     make_transient(i_datasource)
-    logging.info('Started import of the datasource: {}'.format(
+    logging.debug('Started import of the datasource: {}'.format(
         i_datasource.to_json()))
 
     i_datasource.id = None
@@ -54,7 +54,7 @@ def import_datasource(
     for m in i_datasource.metrics:
         new_m = m.copy()
         new_m.table_id = datasource.id
-        logging.info('Importing metric {} from the datasource: {}'.format(
+        logging.debug('Importing metric {} from the datasource: {}'.format(
             new_m.to_json(), i_datasource.full_name))
         imported_m = i_datasource.metric_class.import_obj(new_m)
         if (imported_m.metric_name not in
@@ -64,7 +64,7 @@ def import_datasource(
     for c in i_datasource.columns:
         new_c = c.copy()
         new_c.table_id = datasource.id
-        logging.info('Importing column {} from the datasource: {}'.format(
+        logging.debug('Importing column {} from the datasource: {}'.format(
             new_c.to_json(), i_datasource.full_name))
         imported_c = i_datasource.column_class.import_obj(new_c)
         if (imported_c.column_name not in

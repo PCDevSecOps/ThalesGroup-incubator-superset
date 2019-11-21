@@ -135,7 +135,7 @@ def runserver(debug, console_log, use_reloader, address, port, timeout, workers,
         else:
             debug_run(app, port, use_reloader)
     else:
-        logging.info(
+        logging.debug(
             "The Gunicorn 'superset runserver' command is deprecated. Please "
             "use the 'gunicorn' command instead.")
         addr_str = f' unix:{socket} ' if socket else f' {address}:{port} '
@@ -271,7 +271,7 @@ def import_dashboards(path, recursive):
     elif p.exists() and recursive:
         files.extend(p.rglob('*.json'))
     for f in files:
-        logging.info('Importing dashboard from file %s', f)
+        logging.debug('Importing dashboard from file %s', f)
         try:
             with f.open() as data_stream:
                 dashboard_import_export.import_dashboards(
@@ -294,7 +294,7 @@ def export_dashboards(print_stdout, dashboard_file):
     if print_stdout or not dashboard_file:
         print(data)
     if dashboard_file:
-        logging.info('Exporting dashboards to %s', dashboard_file)
+        logging.debug('Exporting dashboards to %s', dashboard_file)
         with open(dashboard_file, 'w') as data_stream:
             data_stream.write(data)
 
@@ -326,7 +326,7 @@ def import_datasources(path, sync, recursive):
         files.extend(p.rglob('*.yaml'))
         files.extend(p.rglob('*.yml'))
     for f in files:
-        logging.info('Importing datasources from file %s', f)
+        logging.debug('Importing datasources from file %s', f)
         try:
             with f.open() as data_stream:
                 dict_import_export.import_from_dict(
@@ -362,7 +362,7 @@ def export_datasources(print_stdout, datasource_file,
     if print_stdout or not datasource_file:
         yaml.safe_dump(data, stdout, default_flow_style=False)
     if datasource_file:
-        logging.info('Exporting datasources to %s', datasource_file)
+        logging.debug('Exporting datasources to %s', datasource_file)
         with open(datasource_file, 'w') as data_stream:
             yaml.safe_dump(data, data_stream, default_flow_style=False)
 
@@ -401,7 +401,7 @@ def update_datasources_cache():
     help='Number of celery server workers to fire up')
 def worker(workers):
     """Starts a Superset worker for async SQL query execution."""
-    logging.info(
+    logging.debug(
         "The 'superset worker' command is deprecated. Please use the 'celery "
         "worker' command instead.")
     if workers:
@@ -435,7 +435,7 @@ def flower(port, address):
         f'--port={port} '
         f'--address={address} '
     )
-    logging.info(
+    logging.debug(
         "The 'superset flower' command is deprecated. Please use the 'celery "
         "flower' command instead.")
     print(Fore.GREEN + 'Starting a Celery Flower instance')

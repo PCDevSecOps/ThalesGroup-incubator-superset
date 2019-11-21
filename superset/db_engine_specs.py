@@ -856,7 +856,7 @@ class PrestoEngineSpec(BaseEngineSpec):
     @classmethod
     def handle_cursor(cls, cursor, query, session):
         """Updates progress information"""
-        logging.info('Polling the cursor for progress')
+        logging.debug('Polling the cursor for progress')
         polled = cursor.poll()
         # poll returns dict -- JSON status information or ``None``
         # if the query is done
@@ -882,14 +882,14 @@ class PrestoEngineSpec(BaseEngineSpec):
                 total_splits = float(stats.get('totalSplits'))
                 if total_splits and completed_splits:
                     progress = 100 * (completed_splits / total_splits)
-                    logging.info(
+                    logging.debug(
                         'Query progress: {} / {} '
                         'splits'.format(completed_splits, total_splits))
                     if progress > query.progress:
                         query.progress = progress
                     session.commit()
             time.sleep(1)
-            logging.info('Polling the cursor for progress')
+            logging.debug('Polling the cursor for progress')
             polled = cursor.poll()
 
     @classmethod
@@ -1138,7 +1138,7 @@ class HiveEngineSpec(PrestoEngineSpec):
         bucket_path = config['CSV_TO_HIVE_UPLOAD_S3_BUCKET']
 
         if not bucket_path:
-            logging.info('No upload bucket specified')
+            logging.debug('No upload bucket specified')
             raise Exception(
                 'No upload bucket specified. You can specify one in the config file.')
 
@@ -1191,7 +1191,7 @@ class HiveEngineSpec(PrestoEngineSpec):
             ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS
             TEXTFILE LOCATION '{location}'
             tblproperties ('skip.header.line.count'='1')"""
-        logging.info(form.con.data)
+        logging.debug(form.con.data)
         engine = create_engine(form.con.data.sqlalchemy_uri_decrypted)
         engine.execute(sql)
 
@@ -1239,7 +1239,7 @@ class HiveEngineSpec(PrestoEngineSpec):
                 map_progress = int(match.groupdict()['map_progress'])
                 reduce_progress = int(match.groupdict()['reduce_progress'])
                 stages[stage_number] = (map_progress + reduce_progress) / 2
-        logging.info(
+        logging.debug(
             'Progress detail: {}, '
             'current job {}, '
             'total jobs: {}'.format(stages, current_job, total_jobs))
@@ -1281,7 +1281,7 @@ class HiveEngineSpec(PrestoEngineSpec):
             if log:
                 log_lines = log.splitlines()
                 progress = cls.progress(log_lines)
-                logging.info('Progress total: {}'.format(progress))
+                logging.debug('Progress total: {}'.format(progress))
                 needs_commit = False
                 if progress > query.progress:
                     query.progress = progress
@@ -1290,20 +1290,20 @@ class HiveEngineSpec(PrestoEngineSpec):
                     tracking_url = cls.get_tracking_url(log_lines)
                     if tracking_url:
                         job_id = tracking_url.split('/')[-2]
-                        logging.info(
+                        logging.debug(
                             'Found the tracking url: {}'.format(tracking_url))
                         tracking_url = tracking_url_trans(tracking_url)
-                        logging.info(
+                        logging.debug(
                             'Transformation applied: {}'.format(tracking_url))
                         query.tracking_url = tracking_url
-                        logging.info('Job id: {}'.format(job_id))
+                        logging.debug('Job id: {}'.format(job_id))
                         needs_commit = True
                 if job_id and len(log_lines) > last_log_line:
                     # Wait for job id before logging things out
                     # this allows for prefixing all log lines and becoming
                     # searchable in something like Kibana
                     for l in log_lines[last_log_line:]:
-                        logging.info('[{}] {}'.format(job_id, l))
+                        logging.debug('[{}] {}'.format(job_id, l))
                     last_log_line = len(log_lines)
                 if needs_commit:
                     session.commit()

@@ -291,7 +291,7 @@
 #     #             (slc.slice_name, 'explore_json', slc.explore_json_url),
 #     #         ]
 #     #     for name, method, url in urls:
-#     #         logging.info(f'[{name}]/[{method}]: {url}')
+#     #         logging.debug(f'[{name}]/[{method}]: {url}')
 #     #         self.client.get(url)
 
 #     # def test_tablemodelview_list(self):

@@ -54,7 +54,7 @@ def upgrade():
     for slc in filter_box_slices.all():
         try:
             params = json.loads(slc.params)
-            logging.info(f'Upgrading {slc.slice_name}')
+            logging.debug(f'Upgrading {slc.slice_name}')
             cols = params.get('groupby')
             metrics = params.get('metrics')
             if cols:
@@ -86,7 +86,7 @@ def downgrade():
     for slc in filter_box_slices.all():
         try:
             params = json.loads(slc.params)
-            logging.info(f'Downgrading {slc.slice_name}')
+            logging.debug(f'Downgrading {slc.slice_name}')
             flts = params.get('filter_configs')
             if not flts:
                 continue

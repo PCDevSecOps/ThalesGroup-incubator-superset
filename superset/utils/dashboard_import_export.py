@@ -62,7 +62,7 @@ def import_dashboards(session, data_stream, import_time=None):
 
 def export_dashboards(session):
     """Returns all dashboards metadata as a json dump"""
-    logging.info('Starting export')
+    logging.debug('Starting export')
     dashboards = session.query(Dashboard)
     dashboard_ids = []
     for dashboard in dashboards:

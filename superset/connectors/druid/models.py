@@ -530,7 +530,7 @@ class DruidDatasource(Model, BaseDatasource):
 
     def latest_metadata(self):
         """Returns segment metadata from the latest segment"""
-        logging.info('Syncing datasource [{}]'.format(self.datasource_name))
+        logging.debug('Syncing datasource [{}]'.format(self.datasource_name))
         client = self.cluster.get_pydruid_client()
         try:
             results = client.time_boundary(datasource=self.datasource_name)
@@ -855,7 +855,7 @@ class DruidDatasource(Model, BaseDatasource):
                           column_name,
                           limit=10000):
         """Retrieve some values for the given column"""
-        logging.info(
+        logging.debug(
             'Getting values for columns [{}] limited to [{}]'
             .format(column_name, limit))
         # TODO: Use Lexicographic TopNMetricSpec once supported by PyDruid
@@ -1121,7 +1121,7 @@ class DruidDatasource(Model, BaseDatasource):
             qry['limit'] = row_limit
             client.scan(**qry)
         elif len(groupby) == 0 and not having_filters:
-            logging.info('Running timeseries query for no groupby values')
+            logging.debug('Running timeseries query for no groupby values')
             del qry['dimensions']
             client.timeseries(**qry)
         elif (
@@ -1130,7 +1130,7 @@ class DruidDatasource(Model, BaseDatasource):
                 order_desc
         ):
             dim = list(qry.get('dimensions'))[0]
-            logging.info('Running two-phase topn query for dimension [{}]'.format(dim))
+            logging.debug('Running two-phase topn query for dimension [{}]'.format(dim))
             pre_qry = deepcopy(qry)
             if timeseries_limit_metric:
                 order_by = utils.get_metric_name(timeseries_limit_metric)
@@ -1154,7 +1154,7 @@ class DruidDatasource(Model, BaseDatasource):
             del pre_qry['dimensions']
 
             client.topn(**pre_qry)
-            logging.info('Phase 1 Complete')
+            logging.debug('Phase 1 Complete')
             if phase == 2:
                 query_str += '// Two phase query\n// Phase 1\n'
             query_str += json.dumps(
@@ -1176,13 +1176,13 @@ class DruidDatasource(Model, BaseDatasource):
             del qry['dimensions']
             qry['metric'] = list(qry['aggregations'].keys())[0]
             client.topn(**qry)
-            logging.info('Phase 2 Complete')
+            logging.debug('Phase 2 Complete')
         elif len(groupby) > 0 or having_filters:
             # If grouping on multiple fields or using a having filter
             # we have to force a groupby query
-            logging.info('Running groupby query for dimensions [{}]'.format(dimensions))
+            logging.debug('Running groupby query for dimensions [{}]'.format(dimensions))
             if timeseries_limit and is_timeseries:
-                logging.info('Running two-phase query for timeseries')
+                logging.debug('Running two-phase query for timeseries')
 
                 pre_qry = deepcopy(qry)
                 pre_qry_dims = self._dimensions_to_values(qry['dimensions'])
@@ -1226,7 +1226,7 @@ class DruidDatasource(Model, BaseDatasource):
                     }],
                 }
                 client.groupby(**pre_qry)
-                logging.info('Phase 1 Complete')
+                logging.debug('Phase 1 Complete')
                 query_str += '// Two phase query\n// Phase 1\n'
                 query_str += json.dumps(
                     client.query_builder.last_query.query_dict, indent=2)
@@ -1257,7 +1257,7 @@ class DruidDatasource(Model, BaseDatasource):
                     }],
                 }
             client.groupby(**qry)
-            logging.info('Query Complete')
+            logging.debug('Query Complete')
         query_str += json.dumps(
             client.query_builder.last_query.query_dict, indent=2)
         return query_str

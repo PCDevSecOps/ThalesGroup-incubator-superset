@@ -358,7 +358,7 @@ class Slice(Model, AuditMixinNullable, ImportMixin):
             session.flush()
             return slc_to_override.id
         session.add(slc_to_import)
-        logging.info('Final slice: {}'.format(slc_to_import.to_json()))
+        logging.debug('Final slice: {}'.format(slc_to_import.to_json()))
         session.flush()
         return slc_to_import.id
 
@@ -521,10 +521,10 @@ class Dashboard(Model, AuditMixinNullable, ImportMixin):
                         )
             dashboard.position_json = json.dumps(position_data)
 
-        logging.info('Started import of the dashboard: {}'
+        logging.debug('Started import of the dashboard: {}'
                      .format(dashboard_to_import.to_json()))
         session = db.session
-        logging.info('Dashboard has {} slices'
+        logging.debug('Dashboard has {} slices'
                      .format(len(dashboard_to_import.slices)))
         # copy slices object as Slice.import_slice will mutate the slice
         # and will remove the existing dashboard - slice association
@@ -540,7 +540,7 @@ class Dashboard(Model, AuditMixinNullable, ImportMixin):
             if 'remote_id' in slc.params_dict
         }
         for slc in slices:
-            logging.info('Importing slice {} from the dashboard: {}'.format(
+            logging.debug('Importing slice {} from the dashboard: {}'.format(
                 slc.to_json(), dashboard_to_import.dashboard_title))
             remote_slc = remote_id_slice_map.get(slc.id)
             new_slc_id = Slice.import_obj(slc, remote_slc, import_time=import_time)
@@ -571,7 +571,7 @@ class Dashboard(Model, AuditMixinNullable, ImportMixin):
                 #     existing_dashboard = dash
                 if (dash.slug == dashboard_to_import.slug):
                     existing_slug = True
-                    logging.info('Dashboard with same slug exists. Dashboard id {} Dashboard title: {}'.format(
+                    logging.debug('Dashboard with same slug exists. Dashboard id {} Dashboard title: {}'.format(
                         dash.id, dash.dashboard_title))
         if existing_slug:
             flash(u'Dashboard with same slug exists. Update the slug and reimport', 'danger')
@@ -800,7 +800,7 @@ class Database(Model, AuditMixinNullable, ImportMixin):
             effective_username)
 
         masked_url = self.get_password_masked_url(url)
-        logging.info('Database.get_sqla_engine(). Masked URL: {0}'.format(masked_url))
+        logging.debug('Database.get_sqla_engine(). Masked URL: {0}'.format(masked_url))
 
         params = extra.get('engine_params', {})
         if nullpool:
@@ -868,7 +868,7 @@ class Database(Model, AuditMixinNullable, ImportMixin):
                 _log_query(sqls[-1])
                 self.db_engine_spec.execute(cursor, sqls[-1])
                 
-                logging.info('[PERFORMANCE CHECK] query response time from db {0} '.format(datetime.now()-st_seconds))
+                logging.debug('[PERFORMANCE CHECK] query response time from db {0} '.format(datetime.now()-st_seconds))
                
                 st_seconds = datetime.now()
                 if cursor.description is not None:
@@ -886,7 +886,7 @@ class Database(Model, AuditMixinNullable, ImportMixin):
                     if v.type == numpy.object_ and needs_conversion(df[k]):
                         df[k] = df[k].apply(utils.json_dumps_w_dates)
 
-                logging.info('[PERFORMANCE CHECK] pandas data frame formation time after response {0} '.format(datetime.now()-st_seconds))        
+                logging.debug('[PERFORMANCE CHECK] pandas data frame formation time after response {0} '.format(datetime.now()-st_seconds))        
                 return df
 
     def compile_sqla_query(self, qry, schema=None):

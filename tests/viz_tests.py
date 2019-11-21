@@ -130,7 +130,7 @@ class BaseVizTestCase(SupersetTestCase):
         result = test_viz.get_df(query_obj)
         print(result)
         import logging
-        logging.info(result)
+        logging.debug(result)
         pd.testing.assert_series_equal(
             result[DTTM_ALIAS],
             pd.Series([datetime(1960, 1, 1, 5, 0)], name=DTTM_ALIAS),

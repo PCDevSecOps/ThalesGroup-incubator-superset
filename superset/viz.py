@@ -348,7 +348,7 @@ class BaseViz(object):
             'prequeries': [],
             'is_prequery': False,
         }
-        logging.info('[PERFORMANCE CHECK] Query Obj formation time {0} '.format(datetime.now() - st_seconds))    
+        logging.debug('[PERFORMANCE CHECK] Query Obj formation time {0} '.format(datetime.now() - st_seconds))    
         return d
 
     @property
@@ -406,11 +406,11 @@ class BaseViz(object):
             else:
                 payload['data'] = self.get_data(df)
        
-        logging.info('[PERFORMANCE CHECK] df to  for  vis data convertion time {0} '.format(datetime.now() - st_seconds_1))  
+        logging.debug('[PERFORMANCE CHECK] df to  for  vis data convertion time {0} '.format(datetime.now() - st_seconds_1))  
 
         if 'df' in payload:
             del payload['df']
-        logging.info('[PERFORMANCE CHECK] Total Time in execute request  and transform  to vis data  {0} '.format(datetime.now()-st_seconds))    
+        logging.debug('[PERFORMANCE CHECK] Total Time in execute request  and transform  to vis data  {0} '.format(datetime.now()-st_seconds))    
         return payload
 
     def get_df_payload(self, query_obj=None, **kwargs):
@@ -418,7 +418,7 @@ class BaseViz(object):
         if not query_obj:
             query_obj = self.query_obj()
         cache_key = self.cache_key(query_obj, **kwargs) if query_obj else None
-        logging.info('Cache key: {}'.format(cache_key))
+        logging.debug('Cache key: {}'.format(cache_key))
         is_loaded = False
         stacktrace = None
         df = None
@@ -439,7 +439,7 @@ class BaseViz(object):
                     logging.exception(e)
                     logging.error('Error reading cache: ' +
                                   utils.error_msg_from_exception(e))
-                logging.info('Serving from cache')
+                logging.debug('Serving from cache')
 
         if query_obj and not is_loaded:
             try:
@@ -468,7 +468,7 @@ class BaseViz(object):
                     cache_value = pkl.dumps(
                         cache_value, protocol=pkl.HIGHEST_PROTOCOL)
 
-                    logging.info('Caching {} chars at key {}'.format(
+                    logging.debug('Caching {} chars at key {}'.format(
                         len(cache_value), cache_key))
 
                     stats_logger.incr('set_cache_key')

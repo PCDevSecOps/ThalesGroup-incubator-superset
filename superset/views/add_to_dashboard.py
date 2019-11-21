@@ -47,11 +47,11 @@ def create_table(args,fetch_metadata = False):
         db.session.add(table_model)
         db.session.commit()
         fetch_table_metadata(table_model, fetch_metadata)
-        logging.info('table is created with id = '+str(table_model.id)+' and linked with database id = '+str(database_id))
+        logging.debug('table is created with id = '+str(table_model.id)+' and linked with database id = '+str(database_id))
         return table_model
     else:
         # pick first one
-        logging.info('reused table with id = '+str(table_models[0].id))
+        logging.debug('reused table with id = '+str(table_models[0].id))
         fetch_table_metadata(table_models[0], fetch_metadata)
         return table_models[0]
 
@@ -101,7 +101,7 @@ def add_slice_to_dashboard(request,args, datasource_type=None, datasource_id=Non
 
     dash.slices.append(slc)
     db.session.commit()
-    logging.info('Slice ['+ slc.slice_name +'] was added to dashboard id [ '+str(args.get('save_to_dashboard_id'))+' ]')
+    logging.debug('Slice ['+ slc.slice_name +'] was added to dashboard id [ '+str(args.get('save_to_dashboard_id'))+' ]')
 
     return {
         'form_data': slc.form_data,
@@ -134,11 +134,11 @@ def create_database(form):
         db.session.add(db_model)
         db.session.commit()
         database_id = db_model.id 
-        logging.info('database connection is created with id = '+str(database_id))
+        logging.debug('database connection is created with id = '+str(database_id))
         return database_id
     else:
         # pick first one
-        logging.info('reused database connection with id = '+str(db_models[0].id))
+        logging.debug('reused database connection with id = '+str(db_models[0].id))
         return db_models[0].id    
 
 def add_to_dashboard(request):
@@ -153,7 +153,7 @@ def add_to_dashboard(request):
     db.session.add(dash_model)
     db.session.commit()
     dashboard_id = dash_model.id
-    logging.info('new dashboard created with id = ' + str(dashboard_id))
+    logging.debug('new dashboard created with id = ' + str(dashboard_id))
 
 
     slices = json.loads(request.form.get('slices'))

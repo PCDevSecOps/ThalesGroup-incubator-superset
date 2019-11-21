@@ -380,7 +380,7 @@ def schedule_email_report(task, report_type, schedule_id, recipients=None):
 
     # The user may have disabled the schedule. If so, ignore this
     if not schedule or not schedule.active:
-        logging.info('Ignoring deactivated schedule')
+        logging.debug('Ignoring deactivated schedule')
         return
 
     # TODO: Detach the schedule object from the db session
@@ -445,7 +445,7 @@ def schedule_hourly():
     """ Celery beat job meant to be invoked hourly """
 
     if not config.get('ENABLE_SCHEDULED_EMAIL_REPORTS'):
-        logging.info('Scheduled email reports not enabled in config')
+        logging.debug('Scheduled email reports not enabled in config')
         return
 
     resolution = config.get('EMAIL_REPORTS_CRON_RESOLUTION', 0) * 60

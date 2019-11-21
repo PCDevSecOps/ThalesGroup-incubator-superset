@@ -421,7 +421,7 @@ class ElasticDatasource(Model, BaseDatasource):
     @classmethod
     def sync_to_db(cls, name, metadata, cluster):
         """Fetches metadata for that datasource and merges the Superset db"""
-        logging.info('Syncing Elastic datasource [{}]'.format(name))
+        logging.debug('Syncing Elastic datasource [{}]'.format(name))
         session = db.session
         datasource = session.query(cls).filter_by(datasource_name=name).first()
         if not datasource:

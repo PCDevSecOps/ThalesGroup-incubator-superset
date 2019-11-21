@@ -487,7 +487,7 @@ class SqlaTable(Model, BaseDatasource):
     def get_query_str_extended(self, query_obj):
         sqlaq = self.get_sqla_query(**query_obj)
         sql = self.database.compile_sqla_query(sqlaq.sqla_query)
-        logging.info(sql)
+        logging.debug(sql)
         sql = sqlparse.format(sql, reindent=True)
         if query_obj['is_prequery']:
             query_obj['prequeries'].append(sql)
@@ -835,7 +835,7 @@ class SqlaTable(Model, BaseDatasource):
         status = utils.QueryStatus.SUCCESS
         error_message = None
         df = None
-        logging.info('[PERFORMANCE CHECK] SQL Query formation time {0} '.format(datetime.now() - qry_start_dttm))
+        logging.debug('[PERFORMANCE CHECK] SQL Query formation time {0} '.format(datetime.now() - qry_start_dttm))
         db_engine_spec = self.database.db_engine_spec
         try:
             df = self.database.get_df(sql, self.schema)

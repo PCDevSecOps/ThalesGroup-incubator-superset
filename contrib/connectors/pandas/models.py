@@ -275,7 +275,7 @@ class PandasDatasource(Model, BaseDatasource):
         # column and time grain separately.
         d['granularity_sqla'] = utils.choicify(self.dttm_cols)
         d['time_grain_sqla'] = [(g, g) for g in self.GRAINS.keys()]
-        logging.info(d)
+        logging.debug(d)
         return d
 
     @property

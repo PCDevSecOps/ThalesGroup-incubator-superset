@@ -147,9 +147,9 @@ class SupersetSecurityManager(SecurityManager):
                     self.update_user(user)
                     # update user with newly added role
         if not user:
-          logging.info('{0}:{1} [AUTHENTICATION] Login attempt failed for user: {2}'.format(request.remote_addr, request.user_agent, username))
+          logging.debug('{0}:{1} [AUTHENTICATION] Login attempt failed for user: {2}'.format(request.remote_addr, request.user_agent, username))
         else:
-          logging.info('{0}:{1} [AUTHENTICATION] Login Succeeded for user: {2}'.format(request.remote_addr, request.user_agent, username))
+          logging.debug('{0}:{1} [AUTHENTICATION] Login Succeeded for user: {2}'.format(request.remote_addr, request.user_agent, username))
 
         return user
 
@@ -191,7 +191,7 @@ class SupersetSecurityManager(SecurityManager):
         if message:
             _e = None
             try:
-                logging.info('IN TRY decryptMessage:: {0}'.format(message))
+                logging.debug('IN TRY decryptMessage:: {0}'.format(message))
                 _e = base64.b64decode(message)
             except binascii.Error as identifier:
                 logging.error('IN EXCEPT decryptMessage:: handling exception binascii.Error:{0}\nNew message with extra padding created is  {1}'.format(identifier, message + EXTRA_PADDING))
@@ -214,9 +214,9 @@ class SupersetSecurityManager(SecurityManager):
         """
         user = super(SupersetSecurityManager, self).auth_user_db(username, self.decryptMessage(password))
         if not user:
-          logging.info('{0}:{1} [AUTHENTICATION] Login attempt failed for user: {2}'.format(request.remote_addr, request.user_agent, username))
+          logging.debug('{0}:{1} [AUTHENTICATION] Login attempt failed for user: {2}'.format(request.remote_addr, request.user_agent, username))
         else:
-          logging.info('{0}:{1} [AUTHENTICATION] Login Succeeded for user: {2}'.format(request.remote_addr, request.user_agent, username))
+          logging.debug('{0}:{1} [AUTHENTICATION] Login Succeeded for user: {2}'.format(request.remote_addr, request.user_agent, username))
 
         return user
 
@@ -230,7 +230,7 @@ class SupersetSecurityManager(SecurityManager):
             login_path = url_for(
                 self.appbuilder.sm.auth_view.__class__.__name__ + '.login')
             if not ('_id' in session) and ('csrf_token' in session) and request.path != login_path:
-                logging.info('{0}:{1} Session expired. {2} can not be accessed'.format(request.remote_addr, request.user_agent, request.url))
+                logging.debug('{0}:{1} Session expired. {2} can not be accessed'.format(request.remote_addr, request.user_agent, request.url))
             if not ('target_url' in session) and request.path != login_path:
                 session['target_url'] = request.url
         return super(SupersetSecurityManager, self).has_access(permission_name, view_name)
@@ -411,7 +411,7 @@ class SupersetSecurityManager(SecurityManager):
     def update_user_auth_stat(self, user, success=True):
         super(SupersetSecurityManager, self).update_user_auth_stat(user, success)
         if user.fail_login_count > 0 and success != True:
-           logging.info('{0} [AUTHENTICATION] Unsuccessful login attempt count: {1} for user: {2}'.format(request.remote_addr, user.fail_login_count, user.username))
+           logging.debug('{0} [AUTHENTICATION] Unsuccessful login attempt count: {1} for user: {2}'.format(request.remote_addr, user.fail_login_count, user.username))
 
 
 
@@ -420,7 +420,7 @@ class SupersetSecurityManager(SecurityManager):
         from superset import db
         from superset.models import core as models
 
-        logging.info(
+        logging.debug(
             'Fetching a set of all perms to lookup which ones are missing')
         all_pvs = set()
         for pv in self.get_session.query(self.permissionview_model).all():
@@ -432,18 +432,18 @@ class SupersetSecurityManager(SecurityManager):
             if view_menu and perm and (view_menu, perm) not in all_pvs:
                 self.merge_perm(view_menu, perm)
 
-        logging.info('Creating missing datasource permissions.')
+        logging.debug('Creating missing datasource permissions.')
         datasources = ConnectorRegistry.get_all_datasources(db.session)
         for datasource in datasources:
             merge_pv('datasource_access', datasource.get_perm())
             merge_pv('schema_access', datasource.schema_perm)
 
-        logging.info('Creating missing database permissions.')
+        logging.debug('Creating missing database permissions.')
         databases = db.session.query(models.Database).all()
         for database in databases:
             merge_pv('database_access', database.perm)
 
-        logging.info('Creating missing metrics permissions')
+        logging.debug('Creating missing metrics permissions')
         metrics = []
         for datasource_class in ConnectorRegistry.sources.values():
             metrics += list(db.session.query(datasource_class.metric_class).all())
@@ -454,7 +454,7 @@ class SupersetSecurityManager(SecurityManager):
 
     def clean_perms(self):
         """FAB leaves faulty permissions that need to be cleaned up"""
-        logging.info('Cleaning faulty perms')
+        logging.debug('Cleaning faulty perms')
         sesh = self.get_session
         pvms = (
             sesh.query(ab_models.PermissionView)
@@ -466,12 +466,12 @@ class SupersetSecurityManager(SecurityManager):
         deleted_count = pvms.delete()
         sesh.commit()
         if deleted_count:
-            logging.info('Deleted {} faulty permissions'.format(deleted_count))
+            logging.debug('Deleted {} faulty permissions'.format(deleted_count))
 
     def sync_role_definitions(self):
         """Inits the Superset application with security roles and such"""
         from superset import conf
-        logging.info('Syncing role definition')
+        logging.debug('Syncing role definition')
 
         self.create_custom_permissions()
 
@@ -495,7 +495,7 @@ class SupersetSecurityManager(SecurityManager):
         self.clean_perms()
 
     def set_role(self, role_name, pvm_check):
-        logging.info('Syncing {} perms'.format(role_name))
+        logging.debug('Syncing {} perms'.format(role_name))
         sesh = self.get_session
         pvms = sesh.query(ab_models.PermissionView).all()
         pvms = [p for p in pvms if p.permission and p.view_menu]

@@ -83,7 +83,7 @@ def flasher(msg, severity=None):
         if severity == 'danger':
             logging.error(msg)
         else:
-            logging.info(msg)
+            logging.debug(msg)
 
 
 class _memoized:  # noqa
@@ -595,7 +595,7 @@ def notify_user_about_perm_udate(
         granter, user, role, datasource, tpl_name, config):
     msg = render_template(tpl_name, granter=granter, user=user, role=role,
                           datasource=datasource)
-    logging.info(msg)
+    logging.debug(msg)
     subject = __('[Superset] Access to the datasource %(name)s was granted',
                  name=datasource.full_name)
     send_email_smtp(user.email, subject, msg, config, bcc=granter.email,
@@ -679,12 +679,12 @@ def send_MIME_email(e_from, e_to, mime_msg, config, dryrun=False):
             s.starttls()
         if SMTP_USER and SMTP_PASSWORD:
             s.login(SMTP_USER, SMTP_PASSWORD)
-        logging.info('Sent an email to ' + str(e_to))
+        logging.debug('Sent an email to ' + str(e_to))
         s.sendmail(e_from, e_to, mime_msg.as_string())
         s.quit()
     else:
-        logging.info('Dryrun enabled, email notification content is below:')
-        logging.info(mime_msg.as_string())
+        logging.debug('Dryrun enabled, email notification content is below:')
+        logging.debug(mime_msg.as_string())
 
 
 def get_email_address_list(address_string):
@@ -874,7 +874,7 @@ def get_or_create_main_db():
     from superset import conf, db
     from superset.models import core as models
 
-    logging.info('Creating database reference')
+    logging.debug('Creating database reference')
     dbobj = get_main_database(db.session)
     if not dbobj:
         dbobj = models.Database(database_name='main')

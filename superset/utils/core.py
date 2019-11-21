@@ -375,15 +375,6 @@ def pessimistic_json_iso_dttm_ser(obj):
     If one of object is not serializable to json, it will still succeed"""
     return json_iso_dttm_ser(obj, pessimistic=True)
 
-
-def datetime_to_epoch(dttm):
-    if dttm.tzinfo:
-        dttm = dttm.replace(tzinfo=pytz.utc)
-        epoch_with_tz = pytz.utc.localize(EPOCH)
-        return (dttm - epoch_with_tz).total_seconds() * 1000
-    return (dttm - EPOCH).total_seconds() * 1000
-
-
 def now_as_float():
     return datetime_to_epoch(datetime.utcnow())
 

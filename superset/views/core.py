@@ -76,6 +76,7 @@ from .base import (
     CsvResponse, data_payload_response, DeleteMixin, generate_download_headers,
     get_error_msg, handle_api_exception, json_error_response, json_success,
     SupersetFilter, SupersetModelView, YamlExportMixin,
+    get_user_roles,
 )
 from .utils import bootstrap_user_data
 from .add_to_dashboard import add_to_dashboard, replicate_dashboard
@@ -2297,6 +2298,127 @@ class Superset(BaseSupersetView):
             title=dash.dashboard_title,
             bootstrap_data=json.dumps(bootstrap_data),
         )
+    
+    @has_access
+    def dashboard_payload(self, query):
+        APPLICATION_PREFIX = config.get("APPLICATION_PREFIX")
+        if not security_manager.all_datasource_access():
+            Slice = models.Slice
+            Dash = models.Dashboard
+            User = security_manager.user_model
+
+            perms = set()
+            for role in get_user_roles():
+                for perm_view in role.permissions:
+                    t = (perm_view.permission.name, perm_view.view_menu.name)
+                    perms.add(t)
+
+            vm = set()
+            for perm_name, vm_name in perms:
+                if perm_name == 'datasource_access':
+                    vm.add(vm_name)
+
+            slice_ids_qry = (db.session.query(Slice.id).filter(Slice.perm.in_(vm)))
+            owner_ids_qry = (db.session.query(Dash.id).join(Dash.owners).filter(User.id == User.get_user_id()))
+            query = query.filter(or_(Dash.id.in_(db.session.query(Dash.id).distinct().join(Dash.slices).filter(Slice.id.in_(slice_ids_qry)),), Dash.id.in_(owner_ids_qry)),)
+
+        payload = []
+        for o in query.all():
+            d = {
+                'id': o.id,
+                'title': o.dashboard_title,
+                'url': APPLICATION_PREFIX + o.url,
+            }
+            d['url'] = re.sub(r'/dashboard', '/dash', d['url'])
+            payload.append(d)
+        return payload
+
+    @has_access
+    @expose('/dash/')
+    @expose('/dash/<dashboard_id>/')
+    def custom_dashboard(self, dashboard_id=None):
+        """Server side rendering for a dashboard"""
+        session = db.session()
+        qry = session.query(models.Dashboard)
+        payload = self.dashboard_payload(qry)
+        if dashboard_id == None:
+            qry = qry.filter_by(id=payload[0]['id'])
+        else:
+            if dashboard_id.isdigit():
+                qry = qry.filter_by(id=int(dashboard_id))
+            else:
+                qry = qry.filter_by(slug=dashboard_id)
+
+        dash = qry.one_or_none()
+        if not dash:
+            abort(404)
+        datasources = set()
+        for slc in dash.slices:
+            datasource = slc.datasource
+            if datasource:
+                datasources.add(datasource)
+        if config.get('ENABLE_ACCESS_REQUEST'):
+            for datasource in datasources:
+                if datasource and not security_manager.datasource_access(datasource):
+                    flash(
+                        __(security_manager.get_datasource_access_error_msg(datasource)),
+                        'danger')
+                    return redirect(
+                        'superset/request_access/?'
+                        f'dashboard_id={dash.id}&')
+
+        dash_edit_perm = check_ownership(dash, raise_if_false=False) and \
+            security_manager.can_access('can_save_dash', 'Superset')
+        dash_save_perm = security_manager.can_access('can_save_dash', 'Superset')
+        superset_can_explore = security_manager.can_access('can_explore', 'Superset')
+        slice_can_edit = security_manager.can_access('can_edit', 'SliceModelView')
+
+        standalone_mode = request.args.get('standalone') == 'true'
+        edit_mode = request.args.get('edit') == 'true'
+
+        # Hack to log the dashboard_id properly, even when getting a slug
+        @log_this
+        def dashboard(**kwargs):  # noqa
+            pass
+        dashboard(
+            dashboard_id=dash.id,
+            dashboard_version='v2',
+            dash_edit_perm=dash_edit_perm,
+            edit_mode=edit_mode)
+
+        dashboard_data = dash.data
+        dashboard_data.update({
+            'standalone_mode': standalone_mode,
+            'dash_save_perm': dash_save_perm,
+            'dash_edit_perm': dash_edit_perm,
+            'superset_can_explore': superset_can_explore,
+            'slice_can_edit': slice_can_edit,
+        })
+        username = None
+        if g.user.is_anonymous:
+            username = "Anonymous"
+        else:
+            username = g.user.username
+        bootstrap_data = {
+            'user_id': g.user.get_id(),
+            'username': username,
+            'dashboard_data': dashboard_data,
+            'datasources': {ds.uid: ds.data for ds in datasources},
+            'common': self.common_bootsrap_payload(),
+            'editMode': edit_mode,
+        }
+
+        if request.args.get('json') == 'true':
+            return json_success(json.dumps(bootstrap_data))
+
+        return self.render_template(
+            'superset/basic_dashboard.html',
+            entry='dashboard',
+            standalone_mode=standalone_mode,
+            title=dash.dashboard_title,
+            bootstrap_data=json.dumps(bootstrap_data),
+            dashboards=payload
+        )
 
     @api
     @log_this
@@ -2588,11 +2710,11 @@ class Superset(BaseSupersetView):
         limit = limit or app.config.get('SQL_MAX_ROW')
 
         session = db.session()
-        mydb = session.query(models.Database).filter_by(id=database_id).first()
+        mydb = session.query(models.Database).filter_by(id=database_id).one_or_none()
 
         if not mydb:
-            json_error_response(
-                'Database with id {} is missing.'.format(database_id))
+            return json_error_response(
+                'Database with id {} is missing.'.format(database_id), status=400)
 
         rejected_tables = security_manager.rejected_datasources(sql, mydb, schema)
         if rejected_tables:

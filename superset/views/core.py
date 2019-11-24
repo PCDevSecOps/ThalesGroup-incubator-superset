@@ -2301,7 +2301,6 @@ class Superset(BaseSupersetView):
     
     @has_access
     def dashboard_payload(self, query):
-        APPLICATION_PREFIX = config.get("APPLICATION_PREFIX")
         if not security_manager.all_datasource_access():
             Slice = models.Slice
             Dash = models.Dashboard
@@ -2327,7 +2326,7 @@ class Superset(BaseSupersetView):
             d = {
                 'id': o.id,
                 'title': o.dashboard_title,
-                'url': APPLICATION_PREFIX + o.url,
+                'url': o.url,
             }
             d['url'] = re.sub(r'/dashboard', '/dash', d['url'])
             payload.append(d)

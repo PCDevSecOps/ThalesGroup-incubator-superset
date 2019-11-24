@@ -400,10 +400,9 @@ CELERY_CONFIG = None
 # static http headers to be served by your Superset server.
 # This header prevents iFrames from other domains and
 # "clickjacking" as a result
-# HTTP_HEADERS = {'X-Frame-Options': 'SAMEORIGIN'}
+HTTP_HEADERS = {'X-Frame-Options': 'SAMEORIGIN'}
 # If you need to allow iframes from other domains (and are
 # aware of the risks), you can disable this header:
-HTTP_HEADERS = {}
 
 # The db id here results in selecting this one as a default in SQL Lab
 DEFAULT_DB_ID = None
@@ -485,10 +484,6 @@ WTF_CSRF_TIME_LIMIT = 60 * 60 * 24 * 7
 # This link should lead to a page with instructions on how to gain access to a
 # Datasource. It will be placed at the bottom of permissions errors.
 PERMISSION_INSTRUCTIONS_LINK = ''
-
-# Integrate external Blueprints to the app by passing them to your
-# configuration. These blueprints will get integrated in the app
-BLUEPRINTS = []
 
 # Provide a callable that receives a tracking_url and returns another
 # URL. This is used to translate internal Hadoop job tracker URL
@@ -631,3 +626,30 @@ try:
             superset_config.__file__))
 except ImportError:
     pass
+
+from flask import Blueprint, render_template, g, abort, redirect, url_for
+from jinja2 import TemplateNotFound
+
+def flask_app_mutator(app):
+    from .views.core import DashboardModelView
+    from superset import appbuilder
+    appbuilder.add_view(
+        DashboardModelView,
+        name='Personal_Dashboard',
+        label='Your Personal Dashboard',
+        href=APPLICATION_PREFIX + '/dash',
+        icon='fa fa-fw fa-dashboard',
+        category='')
+
+FLASK_APP_MUTATOR = flask_app_mutator
+
+bp = Blueprint('bp', __name__, template_folder='templates')
+
+@bp.route('/dash')
+def example():
+    from superset import appbuilder
+    if not g.user or not g.user.get_id():
+        return redirect(appbuilder.get_url_for_login)
+    return redirect(APPLICATION_PREFIX + '/superset/dash/')
+
+BLUEPRINTS = [bp]

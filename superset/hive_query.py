@@ -103,8 +103,6 @@ def where_clause_date_based(_st, _en, date_partitions, grain):
     if grain == 0:
         # Partition = Date   
         date = date_partitions['date']
-        if _st == _en:
-            time_seq.append("(" + _st.strftime('`' + date + '`' + " = '%Y-%m-%d'") + ")")
         while _st <= _en:
             time_seq.append("(" + _st.strftime('`' + date + '`' + " = '%Y-%m-%d'") + ")")
             _st = _st + timedelta(seconds=GRAIN_VALUE_MAP['PT1D'])
@@ -112,11 +110,6 @@ def where_clause_date_based(_st, _en, date_partitions, grain):
         # Partition = Date, Hour
         date = date_partitions['date']
         hour = date_partitions['hour']
-        if _st == _en:
-            part_time_seq.append(_st.strftime('`' + date + '`' + " = '%Y-%m-%d'"))
-            part_time_seq.append(_st.strftime('`' + hour + '`' + " = '%H'"))
-            time_seq.append("(" + " AND ".join(part_time_seq) + ")")
-            part_time_seq.clear()
         while _st <= _en:
             part_time_seq.append(_st.strftime('`' + date + '`' + " = '%Y-%m-%d'"))
             part_time_seq.append(_st.strftime('`' + hour + '`' + " = '%H'"))

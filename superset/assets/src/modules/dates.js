@@ -37,7 +37,7 @@ export const fDuration = function (t1, t2, format = 'HH:mm:ss.SS') {
 
 export const now = function () {
   // seconds from EPOCH as a float
-  return moment().utc().valueOf();
+  return moment().valueOf();
 };
 
 export const epochTimeXHoursAgo = function (h) {

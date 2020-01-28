@@ -131,7 +131,7 @@ def where_clause_date_based(_st, _en, date_partitions, grain):
     return where_clause
 
 
-def replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions):
+def replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions, date_hour):
     sql_updated = sql
     if granularity_in_partitions:
         # regex for  `granularity` >= 1549497600 type of string
@@ -143,7 +143,14 @@ def replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_i
         sql_updated = re.sub(regex_st, where_clause, sql)
         sql_updated = re.sub(regex_et, '\n', sql_updated)
     else:
-        sql_updated = sql.replace("WHERE", " WHERE " + where_clause + " AND ")
+        if date_hour == False:
+            sql_updated = sql.replace("WHERE", " WHERE " + where_clause + " AND ")
+        else:
+            # Date or Date+Hour Partitioned
+            regex_st = "(`)(" + granularity + ")(`)(\\s+)(>)(=)(\\s+)(\\d+)"
+            regex_et = "(AND)(\\s+)(`)(" + granularity + ")(`)(\\s+)(<)(=)(\\s+)(\\d+)"
+            sql_updated = re.sub(regex_st, where_clause, sql)
+            sql_updated = re.sub(regex_et, '\n', sql_updated)
     return sql_updated
 
 def get_hive_partitions(database, datasource_name):
@@ -197,7 +204,8 @@ def default_hive_query_generator(sql, query_obj, database, datasource_name):
                         else:
                             # Date based partition
                             where_clause = where_clause_date_based(st, en, date_partitions, 0)
-                    sql_updated = replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions)
+                    # True if date/ date+hour based:
+                    sql_updated = replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions, True)
                     return sql_updated
 
             if 'date' not in hive_partitions_obj and 'time' in hive_partitions_obj:
@@ -209,7 +217,8 @@ def default_hive_query_generator(sql, query_obj, database, datasource_name):
                 granularity_in_partitions = (granularity in time_partitions)
                 if st and en and gran_seconds:
                     where_clause = get_partitioned_whereclause(st, en, gran_seconds, time_partitions)
-                    sql_updated = replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions)
+                    # False if not date/ date+hour based, but partitioned on other factors:
+                    sql_updated = replace_whereclause_in_org_sql(granularity, sql, where_clause, granularity_in_partitions, False)
                     logging.info('[PERFORMANCE CHECK] Hive Partition Query formation time {0} '.format(datetime.now() - st_seconds))
                     return sql_updated
     logging.info('[PERFORMANCE CHECK] Hive Partition Query formation time {0} '.format(datetime.now() - st_seconds))

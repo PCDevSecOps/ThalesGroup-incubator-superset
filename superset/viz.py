@@ -34,6 +34,7 @@ import re
 import traceback
 import uuid
 import simplejson as json
+import pytz
 
 from dateutil import relativedelta as rdelta
 from flask import request
@@ -338,6 +339,14 @@ class BaseViz(object):
             'druid_time_origin': form_data.get('druid_time_origin', ''),
             'query_with_partitions':form_data.get('query_with_partitions',False)
         }
+
+        # Coversion of timezones to local
+        if from_dttm is not None and to_dttm is not None:
+            utc_timezone = pytz.timezone('UTC')
+            client_timezone = pytz.timezone(client_tz)
+
+            from_dttm = client_timezone.localize(from_dttm).astimezone(utc_timezone)
+            to_dttm = client_timezone.localize(to_dttm).astimezone(utc_timezone)
 
         d = {
             'timezone': client_tz,

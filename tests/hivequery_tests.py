@@ -105,11 +105,11 @@ class HivePartitionQueryTestCase(unittest.TestCase):
         sql = "WHERE `timestamp` >= '20190411000000' AND `timestamp` <= '20190412000000' AND `c_call_completed` >= 2"
         where_clause = "( `y` = 2019 AND `m` = 01 AND `d` = 01 AND `hr` = 10 )" 
         response = " WHERE ( `y` = 2019 AND `m` = 01 AND `d` = 01 AND `hr` = 10 ) AND  `timestamp` >= '20190411000000' AND `timestamp` <= '20190412000000' AND `c_call_completed` >= 2"
-        self.assertEqual(replace_whereclause_in_org_sql(granularity, sql, where_clause, False),response)
+        self.assertEqual(replace_whereclause_in_org_sql(granularity, sql, where_clause, False, False),response)
 
         sql = "WHERE `timestamp` >= 20190411000000 AND `timestamp` <= 20190412000000 AND `c_call_completed` >= 2"
         response_1 = "WHERE ( `y` = 2019 AND `m` = 01 AND `d` = 01 AND `hr` = 10 ) \n AND `c_call_completed` >= 2"
-        self.assertEqual(replace_whereclause_in_org_sql(granularity, sql, where_clause, True),response_1)
+        self.assertEqual(replace_whereclause_in_org_sql(granularity, sql, where_clause, True, False),response_1)
 
 
 

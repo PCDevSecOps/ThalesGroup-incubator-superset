@@ -340,13 +340,48 @@ class BaseViz(object):
             'query_with_partitions':form_data.get('query_with_partitions',False)
         }
 
-        # Coversion of timezones to local
+        # Conversion of client timezone to UTC
         if from_dttm is not None and to_dttm is not None:
+            # Data's is expected to be in UTC
             utc_timezone = pytz.timezone('UTC')
+
+            # Client TZ
             client_timezone = pytz.timezone(client_tz)
 
+            fmt = "%Y-%m-%d %H:%M:%S"
+            fmtH = "%H"
+
+            dummy_datetime = datetime(year = 2019, month = 1, day = 1, hour = 1, minute = 0, second = 0)
+            dummy_datetime_30 = dummy_datetime + timedelta(minutes=30)
+
+            del_dummy_datetime = client_timezone.localize(dummy_datetime).astimezone(utc_timezone)
+            del_dummy_datetime_hour = del_dummy_datetime.strftime(fmtH)
+            del_dummy_datetime = del_dummy_datetime.strftime(fmt)
+
+            del_dummy_datetime_30 = client_timezone.localize(dummy_datetime_30).astimezone(utc_timezone)
+            del_dummy_datetime_hour_30 = del_dummy_datetime_30.strftime(fmtH)
+            del_dummy_datetime_30 = del_dummy_datetime_30.strftime(fmt)
+
+            # Do only if client timezone is different from UTC
+            if del_dummy_datetime != dummy_datetime or del_dummy_datetime_30 != dummy_datetime_30:
+                # If due to 30 mins offset in timezone, the results are different
+                # Compare only Hour
+                if del_dummy_datetime_hour_30 != del_dummy_datetime_hour:
+                    # Timezone minute offset is present
+                    # If the converted datetime is less than the actual queried date
+                    # Add a delta of 30 mins
+                    del_dummy_datetime = datetime.strptime(del_dummy_datetime, fmt)
+                    if del_dummy_datetime < dummy_datetime:
+                        from_dttm += timedelta(minutes=30)
+                        to_dttm += timedelta(minutes=30)
+                    else:
+                        from_dttm -= timedelta(minutes=30)
+                        to_dttm -= timedelta(minutes=30)
+
             from_dttm = client_timezone.localize(from_dttm).astimezone(utc_timezone)
+            logging.info('[FROM_TIME]: {0}'.format(from_dttm))
             to_dttm = client_timezone.localize(to_dttm).astimezone(utc_timezone)
+            logging.info('[TO_TIME]: {0}'.format(to_dttm))
 
         d = {
             'timezone': client_tz,

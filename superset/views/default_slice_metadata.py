@@ -140,7 +140,7 @@ DEFAULT_SLICES = {
                      'publish_columns':[],
                      'granularity_sqla':None,
                      'time_grain_sqla':None,
-                     'time_range':'No filter',
+                     'time_range':'Last week',
                      'query_with_partitions':False,
                      'metrics':[
                       {

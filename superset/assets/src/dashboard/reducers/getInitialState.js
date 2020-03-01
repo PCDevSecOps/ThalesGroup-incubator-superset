@@ -77,25 +77,23 @@ export default function (bootstrapData) {
 
     // As per the current support only filter_box can publish global default filters
     if (publishSliceData.viz_type == "filter_box") {
-
       let slice = getSliceData(publish_id, dashboard.slices);
-      if (slice) {
+
+      // check date filter is applicable for filter
+      if (slice.form_data.date_filter) {
+        defaultFilters["__time_range"] = slice.form_data.time_range;
+      }
+
+      if (slice.form_data.filter_configs) {
         const publish_columns = publishSliceData.hasOwnProperty("publish_columns") ? publishSliceData.publish_columns : [];
         const filterConfigFilters = getFiltersFromFilterConfig(slice.form_data.filter_configs);
-
         publish_columns.forEach(col => {
           if (isPublishColumnExistsInFilters(filterConfigFilters, col)) {
             defaultFilters[col] = filterConfigFilters[col];
           }
         })
-
-        // check date filter is applicable for filter
-        if (slice.form_data.date_filter) {
-          defaultFilters["__time_range"] = slice.form_data.time_range;
-        }
       }
     }
-
     return defaultFilters;
   }
 

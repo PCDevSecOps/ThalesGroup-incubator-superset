@@ -2328,6 +2328,8 @@ class Superset(BaseSupersetView):
                 'id': o.id,
                 'title': o.dashboard_title,
                 'url': o.url,
+                'slug':o.slug,
+                'type': o.slug.split('_')[0] if o.slug is not None else None ,
             }
             d['url'] = re.sub(r'/dashboard', '/dash', d['url'])
             payload.append(d)
@@ -2357,7 +2359,7 @@ class Superset(BaseSupersetView):
             for dash in payload:
                 # based on url format /superset/dash/dsb_test/
                 # checking for only dsb type of dashboard ids 
-                if dash['url'].split('/')[3].split('_')[0] == tabtypes[0]:
+                if dash['type'] is not None and  dash['type'] == tabtypes[0]:
                     id = dash['id']
                     break
             qry = qry.filter_by(id=id)
@@ -2433,7 +2435,7 @@ class Superset(BaseSupersetView):
         
        
         for _dash in payload:
-            _tabtype = _dash['url'].split('/')[3].split('_')[0]
+            _tabtype = _dash['type']
             if _tabtype in tabtypes:
                 if _tabtype in tab_typed_dashboards:
                     tab_typed_dashboards[_tabtype].append(_dash)

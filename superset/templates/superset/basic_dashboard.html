@@ -75,9 +75,9 @@
           <div class="two wide column" {% if dashboards['dsb']|length < 2 %} style="display: none;" {% endif %}>
                 <div class="ui vertical menu">
                 {% for dash in dashboards['dsb'] %}
-                  {% if dash.url.split('/')[3].split('_')[0] == 'dsb' %}
+                  {% if dash.type == 'dsb' %}
                     <a href="{{ dash.url }}" 
-                    {% if dashboard_id ==  dash.url.split('/')[3] %} class="item active" {% else %} class="item" {% endif %}
+                    {% if dashboard_id ==  dash.slug %} class="item active" {% else %} class="item" {% endif %}
                     name="dsb" ><h3>{{ dash.title }}</h3></a>
                   {% endif %}
                 {% endfor %}
@@ -98,9 +98,9 @@
           <div class="two wide column" {% if dashboards['svc']|length < 2 %} style="display: none;" {% endif %} >
             <div class="ui vertical menu">
               {% for dash in dashboards['svc'] %}
-              {% if dash.url.split('/')[3].split('_')[0] == 'svc' %}
+              {% if dash.type == 'svc' %}
                 <a href="{{ dash.url }}" 
-                {% if dashboard_id ==  dash.url.split('/')[3] %} class="item active" {% else %} class="item" {% endif %}
+                {% if dashboard_id ==  dash.slug %} class="item active" {% else %} class="item" {% endif %}
                 name="svc"><h3>{{ dash.title }}</h3></a>
               {% endif %}
               {% endfor %}
@@ -120,9 +120,9 @@
           <div class="two wide column" {% if dashboards['aut']|length < 2 %} style="display: none;" {% endif %}>
             <div class="ui vertical menu">
               {% for dash in dashboards['aut'] %}
-              {% if dash.url.split('/')[3].split('_')[0] == 'aut' %}
+              {% if dash.type == 'aut' %}
                 <a href="{{ dash.url }}"
-                {% if dashboard_id ==   dash.url.split('/')[3]  %} class="item active" {% else %} class="item" {% endif %}
+                {% if dashboard_id ==   dash.slug  %} class="item active" {% else %} class="item" {% endif %}
                  name="aut"><h3>{{ dash.title }}</h3></a>
               {% endif %}
               {% endfor %}

@@ -3052,12 +3052,13 @@ class Superset(BaseSupersetView):
             'common': self.common_bootsrap_payload(),
         }
 
-        return self.render_template(
-            'superset/basic.html',
-            entry='welcome',
-            title= appbuilder.app_name,
-            bootstrap_data=json.dumps(payload, default=utils.json_iso_dttm_ser),
-        )
+        return redirect(config.get("APPLICATION_PREFIX") + '/superset/dash/')
+        # return self.render_template(
+        #     'superset/basic.html',
+        #     entry='welcome',
+        #     title= appbuilder.app_name,
+        #     bootstrap_data=json.dumps(payload, default=utils.json_iso_dttm_ser),
+        # )
 
     @has_access
     @expose('/profile/<username>/')

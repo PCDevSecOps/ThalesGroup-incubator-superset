@@ -267,3 +267,30 @@ def parse_jwt_token():
     from .sso_auth import parse_hadoop_jwt
     return parse_hadoop_jwt()
 # END  KnoxSSO-Superset integration
+
+
+#################################################################
+# prometheus_client integration in superset for metric analysis
+#################################################################
+from flask import Response
+from prometheus_client import Counter ,generate_latest
+#define metric REQUEST_COUNT and custom labels like 'app_name', 'http_status'
+SUPERSET_REQUESTS_COUNT = Counter(
+    'superset_requests_count', 'App Request Count',
+    ['app_name', 'http_status']
+)
+
+#prometheus HTTP req content type for metrics api
+CONTENT_TYPE_LATEST = str('text/plain; version=0.0.4; charset=utf-8')
+
+# set status_code in prometheus metric on each after_request
+@app.after_request     
+def record_request_data(response):
+    SUPERSET_REQUESTS_COUNT.labels('superset',
+            response.status_code).inc()
+    return response
+
+# Define metrics endpoint used by prometheus for metric pull
+@app.route('/metrics/')
+def metrics():
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)   
